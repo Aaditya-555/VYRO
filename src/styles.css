@@ -162,3 +162,5 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 .bubble[class*="bubble-theme-"]{box-shadow:0 3px 10px #0002}
 .bubble.sent[class*="bubble-theme-"]:after{content:"";position:absolute;right:9px;top:-5px;width:9px;height:9px;border-radius:50%;background:inherit;opacity:.9}
 @media(max-width:650px){.bubble-style-panel{padding:10px;max-height:225px}.bubble-style-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.bubble-style-preview{height:29px}.bubble-style-option small{font-size:7px}}
+
+.group-label{margin-top:18px}.group-preview-list{padding:8px 9px 12px;margin-bottom:8px;border:1px solid #302631;border-radius:12px;background:#17131a}.group-preview-title{font-size:10px;font-weight:700;color:#eee;display:flex;justify-content:space-between;margin-bottom:8px}.group-preview-title span{font-size:7px;letter-spacing:.1em;color:#ff8ba0}.channel-preview{display:block;width:100%;text-align:left;border:0;border-radius:7px;padding:7px 9px;margin-top:3px;background:transparent;color:#a99eaa;font-size:10px}.channel-preview:hover,.channel-preview.active{background:#30202c;color:#fff}
