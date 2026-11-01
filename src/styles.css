@@ -31,3 +31,5 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 .cosmetic-choice.active{border-color:#ff4260;background:#401a27;color:#fff;box-shadow:0 0 12px #ff315522}
 .profile-studio .preview-note{margin-top:18px;font-size:9px}
 @media(max-width:1050px){.profile-studio{display:none}}
+
+@media(max-width:650px){.profile-studio{display:block;margin-top:10px}.workspace{padding-bottom:14px}}
