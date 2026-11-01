@@ -1,40 +1,43 @@
 # VYRO — Connect Beyond Limits
 
-VYRO is an early responsive chat-app UI foundation built with React and Vite.
+VYRO is an early responsive chat-app foundation built with React, Vite, Express and PostgreSQL.
 
-## Run locally
+## Current implementation
 
-```bash
-npm install
-npm run dev
-```
+- Responsive red/black chat UI and animated splash screen
+- Starter API with username/password registration and login
+- Optional email is not required in this first auth scaffold
+- Passwords are hashed with bcrypt (12 rounds)
+- Login/register rate limiting
+- Server-side sessions stored in PostgreSQL with HttpOnly cookies
+- Invite-code gate for account registration
+- Initial PostgreSQL schema for profiles, invites, conversations, members, messages and moderation audit metadata
 
-For a production build:
+## Setup
 
-```bash
-npm run build
-npm run preview
-```
+1. Install Node.js 20+ and PostgreSQL.
+2. Copy `.env.example` to `.env` and set `DATABASE_URL`, a random `SESSION_SECRET` (32+ characters), and `CLIENT_ORIGIN`.
+3. Apply the schema: `psql "$DATABASE_URL" -f database/schema.sql`.
+4. Install dependencies: `npm install`.
+5. Start the API: `npm run server`.
+6. In another terminal start the UI: `npm run dev`.
 
-## Current status
+API health check: `GET http://localhost:3001/api/health`.
 
-This first commit contains the responsive visual foundation, splash screen, sample conversation list, and preview conversation layout.
+## Important status
 
-**It is not yet a working messaging service.** The sample chats are static UI data. The message composer does not send or persist messages. There is no real authentication, database, media storage, push notification service, or voice/video calling yet.
+This is a backend scaffold, not a deployed service. No production database or hosting has been connected yet. The current React screen is still a UI preview and is not yet wired to these auth endpoints. Do not enter real passwords into the preview.
 
-## Planned engineering phases
+Before production: deploy behind HTTPS, set production secrets in the hosting provider, configure CORS to the exact app origin, add CSRF protection and account recovery, review session lifecycle and monitoring, and run security tests. Never commit `.env`, API keys, passwords, or raw invite codes.
 
-1. Backend and secure authentication (server-side password hashing, sessions, recovery, rate limiting).
-2. Persistent chat database and real-time message delivery.
-3. Media uploads, reactions, replies, edits, forwarding, and message search.
-4. Group chats, presence, typing indicators, read receipts, and notification preferences.
-5. Voice/video calling.
-6. Transparent, role-based moderation tools with audited metadata access.
+## Privacy and moderation
 
-Never store passwords in browser local storage or commit secrets/API keys. Use environment variables and server-side secret management for future integrations.
+The schema supports an audit trail for moderation actions and metadata. It is not intended for secret reading of private message contents. Moderator access must be role-checked server-side and every privileged action audited.
 
-## Tech
+## Planned next phases
 
-- React 18
-- Vite 6
-- CSS responsive layout
+1. Wire the React UI to the auth API and add account recovery.
+2. Add authenticated conversation APIs and membership checks.
+3. Add real-time delivery, media storage, reactions, replies, and search.
+4. Add notifications and calling.
+5. Deploy backend and database, then package and test Android builds.
