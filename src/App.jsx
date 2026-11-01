@@ -27,6 +27,14 @@ export default function App() {
   const [mode, setMode] = useState("login");
   const [activeChat, setActiveChat] = useState(chats[0]);
   const [message, setMessage] = useState("");
+  const [typingVisible, setTypingVisible] = useState(false);
+  const [chatMessages, setChatMessages] = useState([
+    { id: 1, chat: "VYRO Updates", name: "VYRO Updates", text: "Hey! Welcome to VYRO.", time: "11:26", kind: "received" },
+    { id: 2, chat: "VYRO Updates", name: "You", text: "The future of conversations starts here.", time: "11:27", kind: "sent", status: "read" },
+    { id: 3, chat: "Aarav", name: "Aarav", text: "That new interface looks clean 🔥", time: "10:42", kind: "received" },
+    { id: 4, chat: "Design Crew", name: "You", text: "Let's review the screens", time: "Yesterday", kind: "sent", status: "delivered" },
+    { id: 5, chat: "Mira", name: "Mira", text: "Sent a photo 📷", time: "Yesterday", kind: "received" }
+  ]);
   const [frame, setFrame] = useState("ember");
   const [nameplate, setNameplate] = useState("soft-cloud");
   const [avatarEffect, setAvatarEffect] = useState("heart-spark");
@@ -35,6 +43,13 @@ export default function App() {
     const timer = window.setTimeout(() => setShowSplash(false), 2600);
     return () => window.clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    setTypingVisible(false);
+    const start = window.setTimeout(() => setTypingVisible(true), 900);
+    const stop = window.setTimeout(() => setTypingVisible(false), 5200);
+    return () => { window.clearTimeout(start); window.clearTimeout(stop); };
+  }, [activeChat.name]);
 
   if (showSplash) {
     return (
@@ -88,15 +103,37 @@ export default function App() {
               <div className="welcome-symbol">V</div>
               <h1>Welcome to <em>VYRO</em></h1>
               <p>A fresh space to connect, share and create.</p>
-              <span>THIS IS A UI PREVIEW — MESSAGES ARE NOT SENT OR STORED</span>
+              <span>UI PREVIEW · MESSAGES STAY ON THIS DEVICE ONLY</span>
             </div>
-            <div className="bubble received">Hey! Welcome to VYRO.<small>11:26 ✓</small></div>
-            <div className="bubble sent">The future of conversations starts here.<small>11:27 ✓✓</small></div>
+            <div className="chat-stream">
+              {chatMessages.filter((item) => item.chat === activeChat.name).map((item) => (
+                <div key={item.id} className={"message-row " + item.kind}>
+                  {item.kind === "received" && <span className="message-avatar">{activeChat.avatar}</span>}
+                  <div className={"bubble " + item.kind}>
+                    {item.kind === "received" && <strong className="bubble-author">{item.name}</strong>}
+                    <span className="bubble-text">{item.text}</span>
+                    <small className="bubble-meta">{item.time}{item.kind === "sent" && <span className={item.status === "read" ? "read-ticks" : ""}> {item.status === "read" ? "✓✓" : "✓"}</span>}</small>
+                  </div>
+                </div>
+              ))}
+              {typingVisible && activeChat.online && (
+                <div className="message-row received typing-row">
+                  <span className="message-avatar">{activeChat.avatar}</span>
+                  <div className="typing-bubble"><span></span><span></span><span></span><small>{activeChat.name} is typing</small></div>
+                </div>
+              )}
+            </div>
           </div>
-          <form className="composer" onSubmit={(event) => { event.preventDefault(); setMessage(""); }}>
+          <form className="composer" onSubmit={(event) => {
+            event.preventDefault();
+            const text = message.trim();
+            if (!text) return;
+            setChatMessages((items) => [...items, { id: Date.now(), chat: activeChat.name, name: "You", text, time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }), kind: "sent", status: "sent" }]);
+            setMessage("");
+          }}>
             <button type="button" className="icon-button" aria-label="Attach file">＋</button>
-            <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Preview only — messaging will be connected later" />
-            <button type="submit" className="send-button" disabled={!message.trim()} aria-label="Send preview message">➤</button>
+            <input value={message} onChange={(event) => setMessage(event.target.value)} placeholder="Message..." />
+            <button type="submit" className="send-button" disabled={!message.trim()} aria-label="Send message">➤</button>
           </form>
         </section>
 
