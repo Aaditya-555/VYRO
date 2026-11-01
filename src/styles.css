@@ -33,3 +33,58 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 @media(max-width:1050px){.profile-studio{display:none}}
 
 @media(max-width:650px){.profile-studio{display:block;margin-top:10px}.workspace{padding-bottom:14px}}
+
+/* 30 collectible profile cosmetics — layered 3D-style motion */
+.profile-studio{display:block;max-height:calc(100vh - 115px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#633040 #151117}
+.cosmetic-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.cosmetic-tile{min-height:36px;padding:8px 7px;border:1px solid #382b38;border-radius:9px;background:linear-gradient(145deg,#211a25,#151219);color:#d5c8d3;font-size:9px;text-align:left;transition:transform .2s,border-color .2s,box-shadow .2s;transform-style:preserve-3d}
+.cosmetic-tile:hover{transform:translateY(-2px) perspective(350px) rotateX(5deg);border-color:#a94a65}
+.cosmetic-tile.active{border-color:#ff4968;background:linear-gradient(135deg,#542034,#25131e);color:white;box-shadow:0 0 14px #ff315544,inset 0 1px #ff9aab55}
+.nameplate{transform:perspective(500px) rotateX(7deg);transform-style:preserve-3d;box-shadow:0 8px 18px #0008,inset 0 1px #ffffff22;transition:all .35s}
+.nameplate:before{content:"";position:absolute;inset:2px;border-radius:8px;border-top:1px solid #ffffff35;pointer-events:none}
+.nameplate h2{text-shadow:0 2px 8px #0008}
+.plate-soft-cloud{background:linear-gradient(120deg,#f4dff5,#b9dafa);color:#45314f;border-color:#fff}
+.plate-soft-cloud span{color:#594e6d}
+.plate-berry-pop{background:linear-gradient(120deg,#ff7eaa,#8c2f75);border-color:#ffc2db}
+.plate-peach-blush{background:linear-gradient(120deg,#ffd1ae,#e87886);color:#582c36;border-color:#ffe4cb}
+.plate-lilac-dream{background:linear-gradient(120deg,#c7a8ff,#7354b8);border-color:#e0ccff}
+.plate-moonlight{background:linear-gradient(120deg,#26345c,#10182d);border-color:#8ca9ed;box-shadow:0 0 18px #779bff55}
+.plate-ocean-glass{background:linear-gradient(120deg,#2ce0d0,#155b87);border-color:#a1fff4}
+.plate-mint-charm{background:linear-gradient(120deg,#b8f0d0,#438f7d);color:#123e35;border-color:#d6ffe4}
+.plate-rose-gold{background:linear-gradient(120deg,#f6c1a9,#9d5267);border-color:#ffe1ce}
+.plate-starlit{background:linear-gradient(120deg,#19264d,#604c9e);border-color:#c7b6ff;box-shadow:0 0 20px #8d79ff66}
+.plate-crimson-royal{background:linear-gradient(120deg,#811a36,#260b20);border:1px solid #ff526c;box-shadow:0 0 24px #ff214855}
+.plate-void-glitch{background:repeating-linear-gradient(115deg,#160d25 0 9px,#3b1746 10px 12px);border-color:#d66aff;animation:plate-glitch 2.8s infinite}
+.plate-cyber-grid{background-color:#101c29;background-image:linear-gradient(#00e5ff22 1px,transparent 1px),linear-gradient(90deg,#00e5ff22 1px,transparent 1px);background-size:9px 9px;border-color:#00e5ff;box-shadow:0 0 18px #00d9ff55}
+.plate-dragon-sigil{background:linear-gradient(120deg,#53120e,#180c12);border:1px solid #ff713c;box-shadow:0 0 20px #ff4a2855}
+.plate-abyss-king{background:linear-gradient(120deg,#080b19,#29203f);border:1px solid #a78aff;box-shadow:0 0 24px #7d5cff66}
+.plate-solar-overdrive{background:linear-gradient(120deg,#8c360d,#e59b26,#5b1711);border:1px solid #ffe18a;box-shadow:0 0 25px #ff8b2c88;animation:solar-pulse 2.4s ease-in-out infinite}
+.profile-avatar{transform-style:preserve-3d;animation:avatar-float 3.5s ease-in-out infinite}
+.effect-heart-spark:after,.effect-kitty-halo:after,.effect-butterfly-drift:after,.effect-bubble-orbit:after,.effect-cherry-blossom:after,.effect-starry-aura:after,.effect-crystal-wings:after,.effect-angel-ring:after,.effect-aurora-ribbon:after,.effect-neon-serpent:after,.effect-cyber-dragon:after,.effect-inferno-wings:after,.effect-void-tentacles:after,.effect-thunder-storm:after,.effect-phoenix-rebirth:after{content:"";position:absolute;inset:-13px;border-radius:26px;pointer-events:none;transform-style:preserve-3d}
+.effect-heart-spark:after{border:2px dotted #ff91c8;box-shadow:0 0 18px #ff6cb4;animation:orbit-spin 7s linear infinite}
+.effect-kitty-halo:after{border:3px double #ffd0e8;box-shadow:0 0 14px #ffb9d9;transform:rotateX(58deg);animation:halo-bob 2.6s ease-in-out infinite}
+.effect-butterfly-drift:after{border:2px dashed #c7a4ff;box-shadow:0 0 16px #b48aff;animation:orbit-spin 5s linear infinite}
+.effect-bubble-orbit:after{border:3px dotted #9defff;box-shadow:0 0 15px #68dfff;animation:halo-bob 2s ease-in-out infinite}
+.effect-cherry-blossom:after{border:2px solid #ff9fce;box-shadow:0 0 22px #ff83b9;animation:orbit-spin 8s linear infinite}
+.effect-starry-aura:after{border:2px dashed #fff0a1;box-shadow:0 0 20px #ffe78b;animation:orbit-spin 9s linear infinite}
+.effect-crystal-wings:after{border:3px double #9dfaff;box-shadow:0 0 20px #62dfff;transform:rotateY(22deg);animation:wing-flare 2.2s ease-in-out infinite}
+.effect-angel-ring:after{border:3px solid #ffe6a1;box-shadow:0 0 22px #fff0b7;transform:rotateX(68deg);animation:halo-bob 2.8s ease-in-out infinite}
+.effect-aurora-ribbon:after{border:3px solid transparent;border-top-color:#7dfbd2;border-bottom-color:#b38aff;box-shadow:0 0 20px #6df5d5;animation:orbit-spin 4s linear infinite}
+.effect-neon-serpent:after{border:3px dashed #54ffb4;box-shadow:0 0 24px #00ff99;animation:orbit-spin 2.5s linear infinite}
+.effect-cyber-dragon:after{border:4px double #ff4d69;box-shadow:0 0 26px #ff264d,0 0 40px #ff264d66;animation:dragon-charge 1.8s ease-in-out infinite}
+.effect-inferno-wings:after{border:3px solid #ff793e;box-shadow:0 0 24px #ff4a1d,0 0 42px #ff8b35;animation:wing-flare 1.6s ease-in-out infinite}
+.effect-void-tentacles:after{border:4px dashed #a879ff;box-shadow:0 0 26px #7c35ff,0 0 40px #4012a8;animation:orbit-spin 3s linear infinite}
+.effect-thunder-storm:after{border:3px dotted #fff26a;box-shadow:0 0 28px #ffe600;animation:thunder-flash 1.3s steps(2,end) infinite}
+.effect-phoenix-rebirth:after{border:4px double #ffb14a;box-shadow:0 0 28px #ff4c23,0 0 44px #ff9c32;animation:phoenix-rise 2.1s ease-in-out infinite}
+@keyframes avatar-float{0%,100%{transform:translateY(0) rotateY(-4deg)}50%{transform:translateY(-4px) rotateY(4deg)}}
+@keyframes orbit-spin{to{transform:rotate(360deg)}}
+@keyframes halo-bob{0%,100%{transform:rotateX(62deg) translateY(0)}50%{transform:rotateX(62deg) translateY(-5px)}}
+@keyframes wing-flare{0%,100%{transform:scale(.96) rotateY(-12deg)}50%{transform:scale(1.08) rotateY(12deg)}}
+@keyframes dragon-charge{0%,100%{transform:rotate(0) scale(1);filter:brightness(1)}50%{transform:rotate(8deg) scale(1.1);filter:brightness(1.7)}}
+@keyframes thunder-flash{0%,45%,100%{opacity:.55;filter:brightness(1)}50%{opacity:1;filter:brightness(2.4)}}
+@keyframes phoenix-rise{0%,100%{transform:translateY(2px) scale(.98);filter:brightness(1)}50%{transform:translateY(-6px) scale(1.08);filter:brightness(1.8)}}
+@keyframes solar-pulse{0%,100%{filter:brightness(1)}50%{filter:brightness(1.45)}}
+@keyframes plate-glitch{0%,92%,100%{transform:perspective(500px) rotateX(7deg) translateX(0)}94%{transform:perspective(500px) rotateX(7deg) translateX(2px)}96%{transform:perspective(500px) rotateX(7deg) translateX(-2px)}}
+@media(max-width:1050px){.profile-studio{display:block;grid-column:1/-1;max-height:none}}
+@media(max-width:650px){.profile-studio{display:block;max-height:none}.cosmetic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(prefers-reduced-motion:reduce){.profile-avatar,.nameplate,.nameplate.plate-void-glitch,.nameplate.plate-solar-overdrive,.profile-avatar:after{animation:none!important;transition:none!important}}
