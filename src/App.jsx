@@ -38,6 +38,8 @@ const chatBackgrounds = [
   ["black-red","Black & Red", "linear-gradient(135deg,#090909 0%,#8f1028 100%)"]
 ];
 
+const bubbleStyles = [["default","Default","💬"],["frog-duck","Frog Duck","🐸"],["flex-cat","Flexing Cat","🐱"],["capybara","Capybara","🦫"],["frog","Frog","🐸"],["cat-dog","Cat & Dog","🐱"],["facepalm","Facepalm","🙈"],["heart-frog","Heart Frog","💚"],["pig-shark","Pig & Shark","🦈"],["tongue-bear","Tongue Bear","🐻"],["doge","Doge","🐶"],["frog-chick","Frog Chick","🐣"],["bunny","Bunny","🐰"],["panda","Panda","🐼"],["turtle","Turtle","🐢"],["fox","Fox","🦊"],["unicorn","Unicorn","🦄"],["koala","Koala","🐨"],["dino","Dino","🦖"],["star-cloud","Star Cloud","🌟"]];
+
 const chats = [
   { name: "VYRO Updates", message: "Welcome to the next wave.", time: "Now", unread: 2, avatar: "V", color: "red", online: true },
   { name: "Aarav", message: "That new interface looks clean 🔥", time: "10:42", unread: 1, avatar: "A", color: "violet", online: true },
@@ -62,6 +64,8 @@ export default function App() {
   const [nameplate, setNameplate] = useState("soft-cloud");
   const [avatarEffect, setAvatarEffect] = useState("heart-spark");
   const [chatBackground, setChatBackground] = useState("black-red");
+  const [bubbleStyle, setBubbleStyle] = useState("default");
+  const [draftBubbleStyle, setDraftBubbleStyle] = useState("default");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowSplash(false), 2600);
@@ -128,6 +132,14 @@ export default function App() {
             </div>
             <small>{chatBackgrounds.find(([id]) => id === chatBackground)?.[1]} · 20 colour blends</small>
           </div>
+          <div className="bubble-style-panel">
+            <div className="bubble-style-heading"><strong>SELECT BUBBLE STYLE</strong><button type="button" onClick={() => setDraftBubbleStyle(bubbleStyle)}>Cancel</button><button type="button" className="bubble-save" onClick={() => setBubbleStyle(draftBubbleStyle)}>Save</button></div>
+            <p>Choose a bubble design for messages you send in every chat.</p>
+            <div className="bubble-style-grid">
+              {bubbleStyles.map(([id, label, emoji]) => <button type="button" key={id} className={draftBubbleStyle === id ? "bubble-style-option selected" : "bubble-style-option"} onClick={() => setDraftBubbleStyle(id)}><span className={"bubble-style-preview bubble-theme-" + id}><i>{emoji}</i></span><small>{label}</small></button>)}
+            </div>
+            <div className="bubble-preview-line"><span>Preview</span><div className={"bubble sent bubble-theme-" + draftBubbleStyle}>Looks awesome! I'm changing mine. <small>Now ✓✓</small></div></div>
+          </div>
           <div className="message-area" style={{ background: chatBackgrounds.find(([id]) => id === chatBackground)?.[2] }}>
             <div className="date-chip">TODAY</div>
             <div className="welcome-card">
@@ -140,7 +152,7 @@ export default function App() {
               {chatMessages.filter((item) => item.chat === activeChat.name).map((item) => (
                 <div key={item.id} className={"message-row " + item.kind}>
                   {item.kind === "received" && <span className="message-avatar">{activeChat.avatar}</span>}
-                  <div className={"bubble " + item.kind}>
+                  <div className={"bubble " + item.kind + (item.kind === "sent" ? " bubble-theme-" + bubbleStyle : "")}>
                     {item.kind === "received" && <strong className="bubble-author">{item.name}</strong>}
                     <span className="bubble-text">{item.text}</span>
                     <small className="bubble-meta">{item.time}{item.kind === "sent" && <span className={item.status === "read" ? "read-ticks" : ""}> {item.status === "read" ? "✓✓" : "✓"}</span>}</small>
