@@ -88,3 +88,33 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 @media(max-width:1050px){.profile-studio{display:block;grid-column:1/-1;max-height:none}}
 @media(max-width:650px){.profile-studio{display:block;max-height:none}.cosmetic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(prefers-reduced-motion:reduce){.profile-avatar,.nameplate,.nameplate.plate-void-glitch,.nameplate.plate-solar-overdrive,.profile-avatar:after{animation:none!important;transition:none!important}}
+
+
+/* Discord / Instagram inspired chat stream and message motion */
+.message-area{align-items:stretch;overflow-y:auto;min-height:0;scrollbar-width:thin;scrollbar-color:#58303c transparent}
+.message-area>.date-chip,.message-area>.welcome-card{align-self:center}
+.chat-stream{width:100%;max-width:820px;margin:4px auto 0;display:flex;flex-direction:column;gap:13px;padding:0 5px 10px}
+.message-row{display:flex;align-items:flex-end;gap:8px;max-width:88%;animation:message-arrive .22s ease-out both}
+.message-row.received{align-self:flex-start}
+.message-row.sent{align-self:flex-end;justify-content:flex-end}
+.message-avatar{width:27px;height:27px;border-radius:9px;display:grid;place-items:center;flex:none;background:linear-gradient(135deg,#ff4260,#66172d);font-size:10px;font-weight:700;color:white;box-shadow:0 3px 12px #0005}
+.bubble{position:relative;max-width:min(560px,100%);padding:10px 13px 7px;border-radius:16px;font-size:12px;line-height:1.5;box-shadow:0 4px 12px #0002;overflow-wrap:anywhere}
+.bubble.received{align-self:flex-start;background:linear-gradient(145deg,#28232c,#211d25);border:1px solid #39313d;border-bottom-left-radius:5px;color:#f1eaf0}
+.bubble.sent{align-self:flex-end;background:linear-gradient(145deg,#762239,#501729);border:1px solid #96304a;border-bottom-right-radius:5px;color:#fff}
+.bubble-author{display:block;font-size:9px;color:#ff91a5;letter-spacing:.02em;margin-bottom:3px}
+.bubble-text{white-space:pre-wrap}
+.bubble-meta{display:flex;justify-content:flex-end;gap:4px;margin-top:4px;color:#c5aab4;font-size:8px;line-height:1}
+.bubble.sent .bubble-meta{color:#f0b5c2}
+.read-ticks{color:#7de1ff;font-weight:700;letter-spacing:-2px}
+.typing-bubble{display:flex;align-items:center;gap:4px;min-height:35px;padding:0 11px;border:1px solid #39313d;border-radius:14px 14px 14px 5px;background:#242027}
+.typing-bubble>span{width:5px;height:5px;background:#ff8298;border-radius:50%;animation:typing-bounce .9s infinite ease-in-out}
+.typing-bubble>span:nth-child(2){animation-delay:.15s}.typing-bubble>span:nth-child(3){animation-delay:.3s}
+.typing-bubble small{margin-left:5px;color:#b6a7b2;font-size:9px}
+@keyframes typing-bounce{0%,60%,100%{transform:translateY(0);opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+@keyframes message-arrive{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+.composer{background:#111015;position:sticky;bottom:0}
+.composer input:focus{border-color:#8c3047;box-shadow:0 0 0 3px #ff31551a}
+.send-button{transition:transform .16s,box-shadow .16s}
+.send-button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 5px 18px #f3294d66}
+@media(max-width:650px){.message-area{padding:18px 10px}.chat-stream{gap:11px;padding:0 0 12px}.message-row{max-width:94%}.bubble{font-size:11px;padding:9px 11px 7px}.message-avatar{width:24px;height:24px}.welcome-card span{font-size:7px}}
+@media(prefers-reduced-motion:reduce){.message-row,.typing-bubble>span{animation:none!important}}
