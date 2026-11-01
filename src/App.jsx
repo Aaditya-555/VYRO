@@ -12,6 +12,9 @@ export default function App() {
   const [mode, setMode] = useState("login");
   const [activeChat, setActiveChat] = useState(chats[0]);
   const [message, setMessage] = useState("");
+  const [frame, setFrame] = useState("ember");
+  const [nameplate, setNameplate] = useState("crimson");
+  const [avatarEffect, setAvatarEffect] = useState("aura");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowSplash(false), 2600);
@@ -82,15 +85,30 @@ export default function App() {
           </form>
         </section>
 
-        <aside className="details">
+        <aside className="details profile-studio">
           <div className="details-glow" />
-          <div className="details-avatar">V</div>
-          <h2>VYRO</h2>
-          <p>Connect Beyond Limits</p>
+          <div className="studio-label">PROFILE CUSTOMIZER</div>
+          <div className={`details-avatar profile-avatar frame-${frame} effect-${avatarEffect}`}>A</div>
+          <div className={`nameplate plate-${nameplate}`}><h2>AADI</h2><span>@your_username</span></div>
+          <p className="profile-bio">Building my space in VYRO ⚡</p>
+          <div className="profile-badge">✦ EARLY MEMBER</div>
           <div className="detail-rule" />
-          <div className="detail-stat"><span>01</span><small>Built for connection</small></div>
-          <div className="detail-stat"><span>∞</span><small>Possibilities ahead</small></div>
-          <div className="preview-note"><b>Early preview</b><br />Real accounts, cloud sync, calls and secure messaging are planned for the backend phase.</div>
+          <div className="cosmetic-group"><strong>AVATAR FRAME</strong><div className="cosmetic-options">
+            <button className={frame === "ember" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setFrame("ember")}>Ember</button>
+            <button className={frame === "neon" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setFrame("neon")}>Neon</button>
+            <button className={frame === "inferno" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setFrame("inferno")}>Inferno</button>
+          </div></div>
+          <div className="cosmetic-group"><strong>NAMEPLATE</strong><div className="cosmetic-options">
+            <button className={nameplate === "crimson" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setNameplate("crimson")}>Crimson</button>
+            <button className={nameplate === "void" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setNameplate("void")}>Void</button>
+            <button className={nameplate === "royal" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setNameplate("royal")}>Royal</button>
+          </div></div>
+          <div className="cosmetic-group"><strong>AVATAR EFFECT</strong><div className="cosmetic-options">
+            <button className={avatarEffect === "aura" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setAvatarEffect("aura")}>Aura</button>
+            <button className={avatarEffect === "lightning" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setAvatarEffect("lightning")}>⚡ Pulse</button>
+            <button className={avatarEffect === "flame" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setAvatarEffect("flame")}>Flame</button>
+          </div></div>
+          <div className="preview-note"><b>Live preview</b><br />Try frames, nameplates and avatar effects. Account sync and unlocks connect when the live service is deployed.</div>
         </aside>
       </section>
       <footer className="footer"><span>VYRO © 2026</span><span className="creator-credit">CREATED BY AADI⚡</span><span>EARLY UI FOUNDATION <b>●</b></span></footer>
