@@ -54,7 +54,7 @@ router.post("/register", authLimiter, async (req, res, next) => {
         [fullName.trim(), username.toLowerCase(), passwordHash]
       );
       await client.query("UPDATE invite_codes SET uses = uses + 1 WHERE id = $1", [invite.rows[0].id]);
-      await client.query("INSERT INTO user_cosmetics (user_id, cosmetic_slug) VALUES ($1, 'ember-frame'), ($1, 'crimson-nameplate'), ($1, 'red-aura') ON CONFLICT DO NOTHING", [created.rows[0].id]);
+      await client.query("INSERT INTO user_cosmetics (user_id, cosmetic_slug) SELECT $1, slug FROM cosmetic_catalog WHERE cosmetic_type IN ('frame','nameplate','avatar_effect') AND is_active = true ON CONFLICT DO NOTHING", [created.rows[0].id]);
       await client.query("COMMIT");
       req.session.regenerate((sessionError) => {
         if (sessionError) return next(sessionError);
