@@ -137,3 +137,10 @@ CREATE TABLE IF NOT EXISTS group_invites (
  revoked_at TIMESTAMPTZ,
  created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- User-customizable display name styling.
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS display_name VARCHAR(24) NOT NULL DEFAULT '';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name_color VARCHAR(16) NOT NULL DEFAULT 'red';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name_font VARCHAR(16) NOT NULL DEFAULT 'space';
+ALTER TABLE profiles ADD COLUMN IF NOT EXISTS name_emoji VARCHAR(16) NOT NULL DEFAULT '⚡';
+UPDATE profiles SET display_name=full_name WHERE display_name='';
