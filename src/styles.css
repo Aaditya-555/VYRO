@@ -177,3 +177,9 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 .name-emoji-choice{font-size:16px}
 .name-save-note{font-size:8px;color:#a99ba6;line-height:1.4}
 .nameplate h2{overflow-wrap:anywhere}
+
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+/* Dual-tone display names and pixel font */
+.nameplate h2{display:inline-block;max-width:100%;background-clip:text;-webkit-background-clip:text;text-shadow:0 1px 0 #ffffff20}
+.name-font-choice[style*="Press Start 2P"]{font-family:"Press Start 2P",monospace!important;font-size:9px;letter-spacing:-1px}
+.nameplate h2[style*="Press Start 2P"]{font-size:clamp(10px,1.2vw,15px);line-height:1.8;letter-spacing:-1px}
