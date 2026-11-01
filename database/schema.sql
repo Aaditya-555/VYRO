@@ -98,7 +98,8 @@ ON CONFLICT (slug) DO NOTHING;
 
 INSERT INTO user_cosmetics (user_id,cosmetic_slug)
 SELECT p.id,c.slug FROM profiles p CROSS JOIN cosmetic_catalog c
-WHERE c.slug IN ('ember-frame','crimson-nameplate','red-aura') ON CONFLICT DO NOTHING;
+WHERE c.cosmetic_type IN ('frame','nameplate','avatar_effect') AND c.is_active = true
+ON CONFLICT DO NOTHING;
 CREATE TABLE IF NOT EXISTS moderation_audit (
  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), moderator_id UUID NOT NULL REFERENCES profiles(id),
  action TEXT NOT NULL, target_user_id UUID REFERENCES profiles(id), conversation_id UUID REFERENCES conversations(id),
