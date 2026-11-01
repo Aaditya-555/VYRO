@@ -61,6 +61,41 @@ INSERT INTO cosmetic_catalog (slug,cosmetic_type,display_name,rarity,preview_tok
 ('flame-aura','avatar_effect','Flame Orbit','epic','flame'),
 ('founder-badge','badge','Founder','legendary','founder')
 ON CONFLICT (slug) DO NOTHING;
+
+-- 15 additional nameplates and 15 avatar decorations: cute, clean and high-impact styles.
+INSERT INTO cosmetic_catalog (slug,cosmetic_type,display_name,rarity,preview_token) VALUES
+('soft-cloud','nameplate','Soft Cloud','common','cloud'),
+('berry-pop','nameplate','Berry Pop','common','berry'),
+('peach-blush','nameplate','Peach Blush','common','peach'),
+('lilac-dream','nameplate','Lilac Dream','common','lilac'),
+('moonlight','nameplate','Moonlight','rare','moon'),
+('ocean-glass','nameplate','Ocean Glass','rare','ocean'),
+('mint-charm','nameplate','Mint Charm','common','mint'),
+('rose-gold','nameplate','Rose Gold','rare','rosegold'),
+('starlit','nameplate','Starlit','rare','stars'),
+('crimson-royal','nameplate','Crimson Royal','epic','crimson'),
+('void-glitch','nameplate','Void Glitch','epic','glitch'),
+('cyber-grid','nameplate','Cyber Grid','epic','cyber'),
+('dragon-sigil','nameplate','Dragon Sigil','legendary','dragon'),
+('abyss-king','nameplate','Abyss King','legendary','abyss'),
+('solar-overdrive','nameplate','Solar Overdrive','legendary','solar'),
+('heart-spark','avatar_effect','Heart Spark','common','heart'),
+('kitty-halo','avatar_effect','Kitty Halo','common','kitty'),
+('butterfly-drift','avatar_effect','Butterfly Drift','common','butterfly'),
+('bubble-orbit','avatar_effect','Bubble Orbit','common','bubble'),
+('cherry-blossom','avatar_effect','Cherry Blossom','rare','blossom'),
+('starry-aura','avatar_effect','Starry Aura','rare','starry'),
+('crystal-wings','avatar_effect','Crystal Wings','rare','crystal'),
+('angel-ring','avatar_effect','Angel Ring','rare','angel'),
+('aurora-ribbon','avatar_effect','Aurora Ribbon','rare','aurora'),
+('neon-serpent','avatar_effect','Neon Serpent','epic','serpent'),
+('cyber-dragon','avatar_effect','Cyber Dragon','legendary','cyberdragon'),
+('inferno-wings','avatar_effect','Inferno Wings','epic','inferno'),
+('void-tentacles','avatar_effect','Void Tentacles','legendary','void'),
+('thunder-storm','avatar_effect','Thunder Storm','epic','thunder'),
+('phoenix-rebirth','avatar_effect','Phoenix Rebirth','legendary','phoenix')
+ON CONFLICT (slug) DO NOTHING;
+
 INSERT INTO user_cosmetics (user_id,cosmetic_slug)
 SELECT p.id,c.slug FROM profiles p CROSS JOIN cosmetic_catalog c
 WHERE c.slug IN ('ember-frame','crimson-nameplate','red-aura') ON CONFLICT DO NOTHING;
