@@ -39,7 +39,7 @@ const chatBackgrounds = [
 ];
 
 const nameColors = [["red","#ff526f"],["orange","#ff9b54"],["yellow","#f5d76e"],["green","#58d68d"],["cyan","#52d6e8"],["blue","#5b9cff"],["purple","#ad83ff"],["pink","#ff8fc8"],["white","#f5f3f5"],["gold","#e9bd58"],["rainbow","linear-gradient(90deg,#ff526f,#ffcf5c,#58d68d,#52d6e8,#ad83ff)"]];
-const nameFonts = [["space","Space Grotesk"],["dm","DM Sans"],["serif","Georgia"],["mono","monospace"],["rounded","Trebuchet MS"],["display","Impact"]];
+const nameFonts = [["space","Space Grotesk"],["dm","DM Sans"],["serif","Georgia"],["mono","monospace"],["rounded","Trebuchet MS"],["display","Impact"],["pixel","Press Start 2P"]];
 const nameEmojis = ["✨","⚡","👑","🔥","💎","🌙","🦋","🐉","🌸","🖤","💫","🎀","🍀","⭐","🪽","🐺","🌈","🫧","❤️","☁️"];
 
 const bubbleStyles = [["default","Default","💬"],["frog-duck","Frog Duck","🐸"],["flex-cat","Flexing Cat","🐱"],["capybara","Capybara","🦫"],["frog","Frog","🐸"],["cat-dog","Cat & Dog","🐱"],["facepalm","Facepalm","🙈"],["heart-frog","Heart Frog","💚"],["pig-shark","Pig & Shark","🦈"],["tongue-bear","Tongue Bear","🐻"],["doge","Doge","🐶"],["frog-chick","Frog Chick","🐣"],["bunny","Bunny","🐰"],["panda","Panda","🐼"],["turtle","Turtle","🐢"],["fox","Fox","🦊"],["unicorn","Unicorn","🦄"],["koala","Koala","🐨"],["dino","Dino","🦖"],["star-cloud","Star Cloud","🌟"]];
@@ -72,6 +72,7 @@ export default function App() {
   const [draftBubbleStyle, setDraftBubbleStyle] = useState("default");
   const [displayName, setDisplayName] = useState("AADI");
   const [nameColor, setNameColor] = useState("red");
+  const [nameColor2, setNameColor2] = useState("purple");
   const [nameFont, setNameFont] = useState("space");
   const [nameEmoji, setNameEmoji] = useState("⚡");
 
@@ -199,14 +200,14 @@ export default function App() {
           <div className="details-glow" />
           <div className="studio-label">PROFILE CUSTOMIZER</div>
           <div className={`details-avatar profile-avatar frame-${frame} effect-${avatarEffect}`}>A</div>
-          <div className={`nameplate plate-${nameplate}`}><h2 style={{color:nameColors.find(([id])=>id===nameColor)?.[1] || "#ff526f",fontFamily:nameFonts.find(([id])=>id===nameFont)?.[1] || "Space Grotesk"}}>{nameEmoji} {displayName || "AADI"}</h2><span>@your_username</span></div>
+          <div className={`nameplate plate-${nameplate}`}><h2 style={{backgroundImage:`linear-gradient(90deg, ${nameColors.find(([id])=>id===nameColor)?.[1] || "#ff526f"}, ${nameColors.find(([id])=>id===nameColor2)?.[1] || "#ad83ff"})`,backgroundClip:"text",WebkitBackgroundClip:"text",color:"transparent",fontFamily:nameFonts.find(([id])=>id===nameFont)?.[1] || "Space Grotesk"}}>{nameEmoji} {displayName || "AADI"}</h2><span>@your_username</span></div>
           <p className="profile-bio">Building my space in VYRO ⚡</p>
           <div className="cosmetic-group name-customizer"><strong>DISPLAY NAME</strong>
             <input className="name-edit-input" value={displayName} maxLength={24} onChange={e=>setDisplayName(e.target.value)} placeholder="Your display name"/>
-            <strong>NAME COLOUR</strong><div className="name-color-options">{nameColors.map(([id,color])=><button key={id} type="button" title={id} aria-label={id+" name colour"} className={nameColor===id?"name-color-dot active":"name-color-dot"} style={{background:color}} onClick={()=>setNameColor(id)}/>)}</div>
+            <strong>NAME COLOUR · FIRST</strong><div className="name-color-options">{nameColors.filter(([id])=>id!=="rainbow").map(([id,color])=><button key={id} type="button" title={id} aria-label={"First name colour "+id} className={nameColor===id?"name-color-dot active":"name-color-dot"} style={{background:color}} onClick={()=>setNameColor(id)}/>)}</div><strong>NAME COLOUR · SECOND</strong><div className="name-color-options">{nameColors.filter(([id])=>id!=="rainbow").map(([id,color])=><button key={id} type="button" title={id} aria-label={"Second name colour "+id} className={nameColor2===id?"name-color-dot active":"name-color-dot"} style={{background:color}} onClick={()=>setNameColor2(id)}/>)}</div>
             <strong>NAME FONT</strong><div className="name-font-options">{nameFonts.map(([id,font])=><button key={id} type="button" className={nameFont===id?"name-font-choice active":"name-font-choice"} style={{fontFamily:font}} onClick={()=>setNameFont(id)}>Aa</button>)}</div>
             <strong>NAME EMOJI</strong><div className="name-emoji-options">{nameEmojis.map(emoji=><button key={emoji} type="button" className={nameEmoji===emoji?"name-emoji-choice active":"name-emoji-choice"} onClick={()=>setNameEmoji(emoji)}>{emoji}</button>)}</div>
-            <small className="name-save-note">Live preview · Saving to your account will be enabled with profile sync.</small>
+            <small className="name-save-note">Two-colour gradient preview · Pixel font included · Profile sync pending.</small>
           </div>
           <div className="profile-badge">✦ EARLY MEMBER</div>
           <div className="detail-rule" />
