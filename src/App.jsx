@@ -93,7 +93,7 @@ export default function App() {
           <div className="preview-note"><b>Early preview</b><br />Real accounts, cloud sync, calls and secure messaging are planned for the backend phase.</div>
         </aside>
       </section>
-      <footer className="footer"><span>VYRO © 2026</span><span>EARLY UI FOUNDATION <b>●</b></span></footer>
+      <footer className="footer"><span>VYRO © 2026</span><span className="creator-credit">CREATED BY AADI⚡</span><span>EARLY UI FOUNDATION <b>●</b></span></footer>
     </main>
   );
 }
