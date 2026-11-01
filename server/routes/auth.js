@@ -54,9 +54,16 @@ router.post("/register", authLimiter, async (req, res, next) => {
         [fullName.trim(), username.toLowerCase(), passwordHash]
       );
       await client.query("UPDATE invite_codes SET uses = uses + 1 WHERE id = $1", [invite.rows[0].id]);
+      await client.query("INSERT INTO user_cosmetics (user_id, cosmetic_slug) VALUES ($1, 'ember-frame'), ($1, 'crimson-nameplate'), ($1, 'red-aura') ON CONFLICT DO NOTHING", [created.rows[0].id]);
       await client.query("COMMIT");
-      req.session.userId = created.rows[0].id;
-      return res.status(201).json({ user: created.rows[0] });
+      req.session.regenerate((sessionError) => {
+        if (sessionError) return next(sessionError);
+        req.session.userId = created.rows[0].id;
+        req.session.save((saveError) => {
+          if (saveError) return next(saveError);
+          return res.status(201).json({ user: created.rows[0] });
+        });
+      });
     } catch (error) {
       await client.query("ROLLBACK");
       if (error.code === "23505") return res.status(409).json({ error: "That username is already taken." });
@@ -80,8 +87,14 @@ router.post("/login", authLimiter, async (req, res, next) => {
     const user = result.rows[0];
     const valid = user ? await bcrypt.compare(password, user.password_hash) : false;
     if (!valid) return res.status(401).json({ error: "Incorrect username or password." });
-    req.session.userId = user.id;
-    return res.json({ user: { id: user.id, full_name: user.full_name, username: user.username } });
+    req.session.regenerate((sessionError) => {
+      if (sessionError) return next(sessionError);
+      req.session.userId = user.id;
+      req.session.save((saveError) => {
+        if (saveError) return next(saveError);
+        return res.json({ user: { id: user.id, full_name: user.full_name, username: user.username } });
+      });
+    });
   } catch (error) { next(error); }
 });
 
