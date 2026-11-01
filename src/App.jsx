@@ -107,6 +107,13 @@ export default function App() {
           </div>
           <div className="section-label">MESSAGES <button className="tiny-button" aria-label="New chat">＋</button></div>
           <label className="search"><span>⌕</span><input placeholder="Search chats" /></label>
+          <div className="section-label group-label">GROUPS & CHANNELS <button className="tiny-button" aria-label="Create group" onClick={() => window.alert("Group UI preview. Sign in and use the /api/groups endpoint when backend is deployed.")}>＋</button></div>
+          <div className="group-preview-list">
+            <div className="group-preview-title">✦ Design Crew <span>OWNER</span></div>
+            <button className="channel-preview active" type="button" onClick={() => setActiveChat({name:"Design Crew · general",message:"Group channel",time:"Now",unread:0,avatar:"D",color:"blue",online:true})}># general</button>
+            <button className="channel-preview" type="button" onClick={() => setActiveChat({name:"Design Crew · ideas",message:"Group channel",time:"Now",unread:0,avatar:"D",color:"blue",online:true})}># ideas</button>
+            <button className="channel-preview" type="button" onClick={() => setActiveChat({name:"Design Crew · announcements",message:"Group channel",time:"Now",unread:0,avatar:"D",color:"blue",online:true})}># announcements</button>
+          </div>
           <div className="chat-list">
             {chats.map((chat) => (
               <button key={chat.name} className={activeChat.name === chat.name ? "chat-item selected" : "chat-item"} onClick={() => setActiveChat(chat)}>
