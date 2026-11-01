@@ -1,5 +1,20 @@
 import { useEffect, useState } from "react";
 
+const nameplates = [
+  ["soft-cloud","☁️ Soft Cloud"],["berry-pop","🍓 Berry Pop"],["peach-blush","🍑 Peach Blush"],
+  ["lilac-dream","🪻 Lilac Dream"],["moonlight","🌙 Moonlight"],["ocean-glass","🌊 Ocean Glass"],
+  ["mint-charm","🍃 Mint Charm"],["rose-gold","🌹 Rose Gold"],["starlit","✨ Starlit"],
+  ["crimson-royal","👑 Crimson Royal"],["void-glitch","🌀 Void Glitch"],["cyber-grid","▦ Cyber Grid"],
+  ["dragon-sigil","🐉 Dragon Sigil"],["abyss-king","♛ Abyss King"],["solar-overdrive","☀️ Solar Overdrive"]
+];
+const avatarDecorations = [
+  ["heart-spark","💗 Heart Spark"],["kitty-halo","🐱 Kitty Halo"],["butterfly-drift","🦋 Butterfly Drift"],
+  ["bubble-orbit","🫧 Bubble Orbit"],["cherry-blossom","🌸 Cherry Blossom"],["starry-aura","⭐ Starry Aura"],
+  ["crystal-wings","💎 Crystal Wings"],["angel-ring","😇 Angel Ring"],["aurora-ribbon","🌈 Aurora Ribbon"],
+  ["neon-serpent","🐍 Neon Serpent"],["cyber-dragon","🐲 Cyber Dragon"],["inferno-wings","🔥 Inferno Wings"],
+  ["void-tentacles","🖤 Void Tentacles"],["thunder-storm","⚡ Thunder Storm"],["phoenix-rebirth","🪽 Phoenix Rebirth"]
+];
+
 const chats = [
   { name: "VYRO Updates", message: "Welcome to the next wave.", time: "Now", unread: 2, avatar: "V", color: "red", online: true },
   { name: "Aarav", message: "That new interface looks clean 🔥", time: "10:42", unread: 1, avatar: "A", color: "violet", online: true },
@@ -13,8 +28,8 @@ export default function App() {
   const [activeChat, setActiveChat] = useState(chats[0]);
   const [message, setMessage] = useState("");
   const [frame, setFrame] = useState("ember");
-  const [nameplate, setNameplate] = useState("crimson");
-  const [avatarEffect, setAvatarEffect] = useState("aura");
+  const [nameplate, setNameplate] = useState("soft-cloud");
+  const [avatarEffect, setAvatarEffect] = useState("heart-spark");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowSplash(false), 2600);
@@ -98,15 +113,11 @@ export default function App() {
             <button className={frame === "neon" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setFrame("neon")}>Neon</button>
             <button className={frame === "inferno" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setFrame("inferno")}>Inferno</button>
           </div></div>
-          <div className="cosmetic-group"><strong>NAMEPLATE</strong><div className="cosmetic-options">
-            <button className={nameplate === "crimson" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setNameplate("crimson")}>Crimson</button>
-            <button className={nameplate === "void" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setNameplate("void")}>Void</button>
-            <button className={nameplate === "royal" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setNameplate("royal")}>Royal</button>
+          <div className="cosmetic-group"><strong>NAMEPLATES · 15 STYLES</strong><div className="cosmetic-grid">
+            {nameplates.map(([id, label]) => <button key={id} className={nameplate === id ? "cosmetic-tile active" : "cosmetic-tile"} onClick={() => setNameplate(id)}>{label}</button>)}
           </div></div>
-          <div className="cosmetic-group"><strong>AVATAR EFFECT</strong><div className="cosmetic-options">
-            <button className={avatarEffect === "aura" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setAvatarEffect("aura")}>Aura</button>
-            <button className={avatarEffect === "lightning" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setAvatarEffect("lightning")}>⚡ Pulse</button>
-            <button className={avatarEffect === "flame" ? "cosmetic-choice active" : "cosmetic-choice"} onClick={() => setAvatarEffect("flame")}>Flame</button>
+          <div className="cosmetic-group"><strong>AVATAR DECORATIONS · 15 STYLES</strong><div className="cosmetic-grid">
+            {avatarDecorations.map(([id, label]) => <button key={id} className={avatarEffect === id ? "cosmetic-tile active" : "cosmetic-tile"} onClick={() => setAvatarEffect(id)}>{label}</button>)}
           </div></div>
           <div className="preview-note"><b>Live preview</b><br />Try frames, nameplates and avatar effects. Account sync and unlocks connect when the live service is deployed.</div>
         </aside>
