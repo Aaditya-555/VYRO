@@ -6,6 +6,7 @@ import session from "express-session";
 import connectPgSimple from "connect-pg-simple";
 import { pool } from "./db.js";
 import authRouter from "./routes/auth.js";
+import profileRouter from "./routes/profile.js";
 
 const app = express();
 const PgSession = connectPgSimple(session);
@@ -36,6 +37,7 @@ app.use(session({
 
 app.get("/api/health", (_req, res) => res.json({ status: "ok", service: "vyro-api" }));
 app.use("/api/auth", authRouter);
+app.use("/api/profile", profileRouter);
 
 app.use((err, _req, res, _next) => {
   console.error("Request failed:", err.message);
