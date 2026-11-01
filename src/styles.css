@@ -164,3 +164,16 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 @media(max-width:650px){.bubble-style-panel{padding:10px;max-height:225px}.bubble-style-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.bubble-style-preview{height:29px}.bubble-style-option small{font-size:7px}}
 
 .group-label{margin-top:18px}.group-preview-list{padding:8px 9px 12px;margin-bottom:8px;border:1px solid #302631;border-radius:12px;background:#17131a}.group-preview-title{font-size:10px;font-weight:700;color:#eee;display:flex;justify-content:space-between;margin-bottom:8px}.group-preview-title span{font-size:7px;letter-spacing:.1em;color:#ff8ba0}.channel-preview{display:block;width:100%;text-align:left;border:0;border-radius:7px;padding:7px 9px;margin-top:3px;background:transparent;color:#a99eaa;font-size:10px}.channel-preview:hover,.channel-preview.active{background:#30202c;color:#fff}
+
+/* Display name customizer */
+.name-customizer{display:flex;flex-direction:column;gap:8px}
+.name-edit-input{width:100%;border:1px solid #44313d;border-radius:9px;background:#17131a;color:#fff;padding:9px 10px;font-size:11px;outline:none}
+.name-edit-input:focus{border-color:#ef526f}
+.name-color-options,.name-font-options,.name-emoji-options{display:flex;flex-wrap:wrap;gap:7px}
+.name-color-dot{width:23px;height:23px;border-radius:50%;border:2px solid #ffffff30;outline:0;cursor:pointer}
+.name-color-dot.active{outline:2px solid #fff;outline-offset:2px}
+.name-font-choice,.name-emoji-choice{min-width:31px;height:30px;border:1px solid #44313d;border-radius:7px;background:#17131a;color:#eee;font-size:14px}
+.name-font-choice.active,.name-emoji-choice.active{border-color:#ff526f;background:#38202a;box-shadow:0 0 10px #ff526f44}
+.name-emoji-choice{font-size:16px}
+.name-save-note{font-size:8px;color:#a99ba6;line-height:1.4}
+.nameplate h2{overflow-wrap:anywhere}
