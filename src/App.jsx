@@ -15,6 +15,29 @@ const avatarDecorations = [
   ["void-tentacles","🖤 Void Tentacles"],["thunder-storm","⚡ Thunder Storm"],["phoenix-rebirth","🪽 Phoenix Rebirth"]
 ];
 
+const chatBackgrounds = [
+  ["aurora","Aurora", "linear-gradient(135deg,#172b4d 0%,#5b3b82 100%)"],
+  ["sunset","Sunset", "linear-gradient(135deg,#ff7e5f 0%,#7b2ff7 100%)"],
+  ["ocean","Ocean", "linear-gradient(135deg,#007991 0%,#78ffd6 100%)"],
+  ["berry","Berry", "linear-gradient(135deg,#8e2de2 0%,#4a00e0 100%)"],
+  ["peach","Peach", "linear-gradient(135deg,#ffb199 0%,#ff0844 100%)"],
+  ["mint","Mint", "linear-gradient(135deg,#134e5e 0%,#71b280 100%)"],
+  ["cotton-candy","Cotton Candy", "linear-gradient(135deg,#fbc2eb 0%,#a6c1ee 100%)"],
+  ["fire","Fire", "linear-gradient(135deg,#f12711 0%,#f5af19 100%)"],
+  ["lavender","Lavender", "linear-gradient(135deg,#654ea3 0%,#eaafc8 100%)"],
+  ["emerald","Emerald", "linear-gradient(135deg,#004d7a 0%,#00bf8f 100%)"],
+  ["rose","Rose", "linear-gradient(135deg,#de6262 0%,#ffb88c 100%)"],
+  ["midnight","Midnight", "linear-gradient(135deg,#232526 0%,#414345 100%)"],
+  ["galaxy","Galaxy", "linear-gradient(135deg,#0f0c29 0%,#302b63 100%)"],
+  ["lemon","Lemon", "linear-gradient(135deg,#f7971e 0%,#ffd200 100%)"],
+  ["ice","Ice", "linear-gradient(135deg,#2193b0 0%,#6dd5ed 100%)"],
+  ["cherry","Cherry", "linear-gradient(135deg,#eb3349 0%,#f45c43 100%)"],
+  ["forest","Forest", "linear-gradient(135deg,#134e5e 0%,#2b5876 100%)"],
+  ["neon","Neon", "linear-gradient(135deg,#00c3ff 0%,#ffff1c 100%)"],
+  ["plum","Plum", "linear-gradient(135deg,#cc2b5e 0%,#753a88 100%)"],
+  ["black-red","Black & Red", "linear-gradient(135deg,#090909 0%,#8f1028 100%)"]
+];
+
 const chats = [
   { name: "VYRO Updates", message: "Welcome to the next wave.", time: "Now", unread: 2, avatar: "V", color: "red", online: true },
   { name: "Aarav", message: "That new interface looks clean 🔥", time: "10:42", unread: 1, avatar: "A", color: "violet", online: true },
@@ -38,6 +61,7 @@ export default function App() {
   const [frame, setFrame] = useState("ember");
   const [nameplate, setNameplate] = useState("soft-cloud");
   const [avatarEffect, setAvatarEffect] = useState("heart-spark");
+  const [chatBackground, setChatBackground] = useState("black-red");
 
   useEffect(() => {
     const timer = window.setTimeout(() => setShowSplash(false), 2600);
@@ -97,7 +121,14 @@ export default function App() {
             <div><strong>{activeChat.name}</strong><small>{activeChat.online ? "● Online" : "Last seen recently"}</small></div>
             <div className="head-actions"><button className="icon-button" aria-label="Voice call">⌕</button><button className="icon-button" aria-label="More options">•••</button></div>
           </div>
-          <div className="message-area">
+          <div className="chat-background-picker" aria-label="Chat background colours">
+            <span>CHAT BACKGROUND</span>
+            <div className="background-swatches">
+              {chatBackgrounds.map(([id, label, gradient]) => <button key={id} type="button" title={label} aria-label={label} aria-pressed={chatBackground === id} className={chatBackground === id ? "background-swatch active" : "background-swatch"} style={{ background: gradient }} onClick={() => setChatBackground(id)} />)}
+            </div>
+            <small>{chatBackgrounds.find(([id]) => id === chatBackground)?.[1]} · 20 colour blends</small>
+          </div>
+          <div className="message-area" style={{ background: chatBackgrounds.find(([id]) => id === chatBackground)?.[2] }}>
             <div className="date-chip">TODAY</div>
             <div className="welcome-card">
               <div className="welcome-symbol">V</div>
