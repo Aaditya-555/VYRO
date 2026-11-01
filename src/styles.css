@@ -118,3 +118,14 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 .send-button:not(:disabled):hover{transform:translateY(-2px);box-shadow:0 5px 18px #f3294d66}
 @media(max-width:650px){.message-area{padding:18px 10px}.chat-stream{gap:11px;padding:0 0 12px}.message-row{max-width:94%}.bubble{font-size:11px;padding:9px 11px 7px}.message-avatar{width:24px;height:24px}.welcome-card span{font-size:7px}}
 @media(prefers-reduced-motion:reduce){.message-row,.typing-bubble>span{animation:none!important}}
+
+/* 20 dual-colour chat background themes */
+.chat-background-picker{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:9px 16px;background:#151219;border-bottom:1px solid #30232d}
+.chat-background-picker>span{font-size:8px;font-weight:800;letter-spacing:.16em;color:#a99aa6;white-space:nowrap}
+.background-swatches{display:flex;align-items:center;gap:7px;flex:1;overflow-x:auto;padding:3px 2px 6px;scrollbar-width:thin;scrollbar-color:#754052 transparent}
+.background-swatch{width:25px;height:25px;min-width:25px;border:2px solid #ffffff55;border-radius:50%;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.background-swatch:hover{transform:scale(1.16)}
+.background-swatch.active{outline:2px solid #fff;outline-offset:2px;box-shadow:0 0 12px #ffffff88}
+.chat-background-picker>small{font-size:8px;color:#b6a6b1;white-space:nowrap}
+.message-area{background-size:cover;background-attachment:local;transition:background .25s ease}
+@media(max-width:650px){.chat-background-picker{gap:7px;padding:8px 10px}.chat-background-picker>span{font-size:7px}.background-swatches{gap:8px}.background-swatch{width:23px;height:23px;min-width:23px}.chat-background-picker>small{display:none}}
