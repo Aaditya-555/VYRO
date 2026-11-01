@@ -129,3 +129,36 @@ button,input{font:inherit}button{cursor:pointer}.splash{min-height:100vh;display
 .chat-background-picker>small{font-size:8px;color:#b6a6b1;white-space:nowrap}
 .message-area{background-size:cover;background-attachment:local;transition:background .25s ease}
 @media(max-width:650px){.chat-background-picker{gap:7px;padding:8px 10px}.chat-background-picker>span{font-size:7px}.background-swatches{gap:8px}.background-swatch{width:23px;height:23px;min-width:23px}.chat-background-picker>small{display:none}}
+
+
+/* Custom chat bubble styles inspired by the reference picker */
+.bubble-style-panel{padding:12px 15px 14px;background:#f7f7fa;color:#24212a;border-bottom:1px solid #ddd9e2;max-height:255px;overflow:auto}
+.bubble-style-heading{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.bubble-style-heading strong{font-size:10px;letter-spacing:.1em}
+.bubble-style-heading button{border:0;background:transparent;color:#6d6570;font-size:10px;padding:5px}
+.bubble-style-heading .bubble-save{color:#e04465;font-weight:800}
+.bubble-style-panel>p{font-size:9px;color:#77717b;margin:5px 0 10px}
+.bubble-style-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.bubble-style-option{min-width:0;display:flex;flex-direction:column;align-items:center;gap:5px;padding:7px 3px;border:1px solid transparent;border-radius:10px;background:transparent;color:#37313b}
+.bubble-style-option.selected{border:2px solid #27212c;background:#fff}
+.bubble-style-option small{font-size:8px;text-align:center;white-space:nowrap}
+.bubble-style-preview{width:100%;height:34px;display:grid;place-items:center;border-radius:14px 14px 14px 4px;background:#1478ee;position:relative}
+.bubble-style-preview i{font-style:normal;font-size:15px;filter:drop-shadow(0 1px 1px #0003)}
+.bubble-preview-line{display:flex;align-items:center;gap:10px;margin-top:10px;padding-top:8px;border-top:1px solid #e5e1e8}
+.bubble-preview-line>span{font-size:8px;color:#77717b;white-space:nowrap}
+.bubble-preview-line .bubble{margin-left:auto;max-width:75%;font-size:10px;padding:8px 11px}
+.bubble-preview-line .bubble small{font-size:7px}
+.bubble.sent[class*="bubble-theme-"]{position:relative}
+.bubble.sent.bubble-theme-default{background:linear-gradient(135deg,#087cf0,#1765dc);border-color:#398ff8;border-radius:19px 19px 19px 6px}
+.bubble.sent.bubble-theme-frog-duck,.bubble.sent.bubble-theme-frog,.bubble.sent.bubble-theme-frog-chick{background:linear-gradient(135deg,#fff36a,#d6e94b);color:#24321c;border-color:#c6d84a}
+.bubble.sent.bubble-theme-flex-cat,.bubble.sent.bubble-theme-cat-dog,.bubble.sent.bubble-theme-facepalm{background:linear-gradient(135deg,#fff,#e9e8ed);color:#29252d;border-color:#d8d5dc}
+.bubble.sent.bubble-theme-capybara,.bubble.sent.bubble-theme-tongue-bear,.bubble.sent.bubble-theme-koala{background:linear-gradient(135deg,#f4c58c,#d99c5d);color:#422d20;border-color:#d69b60}
+.bubble.sent.bubble-theme-heart-frog,.bubble.sent.bubble-theme-bunny{background:linear-gradient(135deg,#ffc4dc,#f58eb9);color:#55253c;border-color:#ef9cbd}
+.bubble.sent.bubble-theme-pig-shark,.bubble.sent.bubble-theme-turtle{background:linear-gradient(135deg,#d8efff,#8bd7ed);color:#173c51;border-color:#83cde4}
+.bubble.sent.bubble-theme-doge,.bubble.sent.bubble-theme-fox{background:linear-gradient(135deg,#ffe0a0,#f2b85d);color:#493015;border-color:#e8b35d}
+.bubble.sent.bubble-theme-unicorn,.bubble.sent.bubble-theme-star-cloud{background:linear-gradient(135deg,#e6d5ff,#fbc8e7);color:#452b5d;border-color:#c8a8f1}
+.bubble.sent.bubble-theme-panda{background:linear-gradient(135deg,#e7e7e7,#c9c9d2);color:#24242a;border-color:#bdbdc7}
+.bubble.sent.bubble-theme-dino{background:linear-gradient(135deg,#a6edb4,#4dbd81);color:#173b2a;border-color:#54bb80}
+.bubble[class*="bubble-theme-"]{box-shadow:0 3px 10px #0002}
+.bubble.sent[class*="bubble-theme-"]:after{content:"";position:absolute;right:9px;top:-5px;width:9px;height:9px;border-radius:50%;background:inherit;opacity:.9}
+@media(max-width:650px){.bubble-style-panel{padding:10px;max-height:225px}.bubble-style-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}.bubble-style-preview{height:29px}.bubble-style-option small{font-size:7px}}
