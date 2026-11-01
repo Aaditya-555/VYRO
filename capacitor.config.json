@@ -1,0 +1,9 @@
+{
+  "appId": "com.aadi.vyro",
+  "appName": "VYRO",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  }
+}
