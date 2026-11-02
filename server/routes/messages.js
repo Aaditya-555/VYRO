@@ -25,11 +25,15 @@ router.get("/:conversationId", signedIn, async (req, res, next) => {
 
     const result = await pool.query(
       `SELECT m.id,m.conversation_id,m.channel_id,m.sender_id,p.username,p.display_name,
-              m.body,m.created_at,m.edited_at,m.deleted_at
+              m.body,m.created_at,m.edited_at,m.deleted_at,
+              COALESCE((SELECT json_agg(json_build_object('emoji',rx.emoji,'count',rx.reaction_count,'reacted',rx.reacted))
+                FROM (SELECT mr.emoji,COUNT(*)::int AS reaction_count,
+                      BOOL_OR(mr.user_id=$4) AS reacted
+                      FROM message_reactions mr WHERE mr.message_id=m.id GROUP BY mr.emoji) rx),'[]'::json) AS reactions
        FROM messages m JOIN profiles p ON p.id=m.sender_id
        WHERE m.conversation_id=$1 AND (($2::uuid IS NULL AND m.channel_id IS NULL) OR m.channel_id=$2)
        ORDER BY m.created_at DESC LIMIT $3`,
-      [conversationId, channelId, limit]
+      [conversationId, channelId, limit, req.session.userId]
     );
     return res.json({ messages: result.rows.reverse() });
   } catch (error) { next(error); }
@@ -63,6 +67,33 @@ router.post("/:conversationId", signedIn, async (req, res, next) => {
       [conversationId, channelId, req.session.userId, body]
     );
     return res.status(201).json({ message: result.rows[0] });
+  } catch (error) { next(error); }
+});
+
+router.post("/:conversationId/:messageId/reactions", signedIn, async (req, res, next) => {
+  try {
+    const emoji = typeof req.body?.emoji === "string" ? req.body.emoji : "";
+    const allowed = ["❤️","😂","🔥","👍","😍","😭","✨","🎉"];
+    if (!allowed.includes(emoji)) return res.status(400).json({ error: "Choose a supported reaction." });
+    const member = await pool.query(
+      "SELECT 1 FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",
+      [req.params.conversationId, req.session.userId]
+    );
+    if (!member.rowCount) return res.status(404).json({ error: "Conversation not found." });
+    const message = await pool.query(
+      "SELECT 1 FROM messages WHERE id=$1 AND conversation_id=$2 AND deleted_at IS NULL",
+      [req.params.messageId, req.params.conversationId]
+    );
+    if (!message.rowCount) return res.status(404).json({ error: "Message not found." });
+    const removed = await pool.query(
+      "DELETE FROM message_reactions WHERE message_id=$1 AND user_id=$2 AND emoji=$3 RETURNING message_id",
+      [req.params.messageId, req.session.userId, emoji]
+    );
+    if (!removed.rowCount) await pool.query(
+      "INSERT INTO message_reactions(message_id,user_id,emoji) VALUES($1,$2,$3) ON CONFLICT DO NOTHING",
+      [req.params.messageId, req.session.userId, emoji]
+    );
+    return res.json({ ok: true, toggledOff: Boolean(removed.rowCount) });
   } catch (error) { next(error); }
 });
 
