@@ -1,4 +1,4 @@
--- VYRO schema for Supabase-hosted PostgreSQL. Apply in Supabase SQL Editor.
+-- VYRO schema for standard PostgreSQL. Apply with psql or a trusted SQL client.
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 CREATE TABLE IF NOT EXISTS profiles (
  id UUID PRIMARY KEY DEFAULT gen_random_uuid(), full_name VARCHAR(60) NOT NULL,
