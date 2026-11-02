@@ -33,3 +33,27 @@
 @keyframes effect-float{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-4px) rotate(5deg)}}
 @keyframes studio-sheen{0%,72%,100%{transform:translateX(-100%)}86%{transform:translateX(100%)}}
 @media(prefers-reduced-motion:reduce){.big-avatar,.big-avatar:before,.big-avatar:after,.big-avatar i,.cosmetic-card.chosen .cosmetic-symbol,.profile-preview:after{animation:none!important;transition:none!important}}
+
+
+/* VYRO conversation motion + tactile reaction layer */
+.messages-area{scroll-behavior:smooth;overscroll-behavior:contain}
+.message-line{display:flex;flex-direction:column;gap:5px;max-width:min(78%,620px);margin:12px 0;animation:message-arrive .24s cubic-bezier(.2,.8,.2,1) both}
+.message-line.mine{align-self:flex-end;align-items:flex-end}
+.message-line.theirs{align-self:flex-start;align-items:flex-start}
+.my-message,.their-message{position:relative;max-width:100%;padding:11px 14px;border-radius:17px;font-size:13px;line-height:1.55;overflow-wrap:anywhere;box-shadow:0 7px 20px #0003}
+.my-message{margin:0;background:linear-gradient(135deg,#c92a4b,#741b39);border:1px solid #ff718a55;border-bottom-right-radius:5px;color:#fff;box-shadow:inset 0 1px #ffffff26,0 8px 24px #c51f4930}
+.their-message{margin:0;background:linear-gradient(145deg,#28212d,#19151e);border:1px solid #4b3b4c;border-bottom-left-radius:5px;color:#f6edf4;box-shadow:inset 0 1px #ffffff12,0 8px 22px #0004}
+.my-message small,.their-message small{font-size:9px;opacity:.72;margin-top:5px}
+.message-reaction-row{display:flex;align-items:center;gap:5px;flex-wrap:wrap;min-height:20px}
+.reaction-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 7px;border-radius:20px;border:1px solid #51404f;background:#211a25;color:#fff;font-size:11px;transition:transform .15s ease,background .15s ease}
+.reaction-chip span{font-size:9px;color:#c9bbc9}
+.reaction-chip.reacted{border-color:#ff6b88;background:#4b1d30;box-shadow:0 0 14px #ff315e25}
+.reaction-chip:active,.quick-reactions button:active{transform:scale(.9)}
+.quick-reactions{display:flex;gap:2px;opacity:0;transform:translateY(3px);transition:opacity .18s ease,transform .18s ease}
+.message-line:hover .quick-reactions,.message-line:focus-within .quick-reactions{opacity:1;transform:translateY(0)}
+.quick-reactions button{border:0;background:#211a25;border-radius:8px;padding:3px 5px;font-size:12px}
+.quick-reactions button:hover{background:#4b1d30}
+.chat-error{margin:0 25px 12px}
+@keyframes message-arrive{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:700px){.message-line{max-width:90%}.quick-reactions{opacity:1;transform:none}.messages-area{padding-bottom:28px}}
+@media(prefers-reduced-motion:reduce){.message-line{animation:none}.messages-area{scroll-behavior:auto}.reaction-chip,.quick-reactions{transition:none}}
