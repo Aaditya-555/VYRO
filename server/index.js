@@ -8,6 +8,7 @@ import { pool } from "./db.js";
 import authRouter from "./routes/auth.js";
 import profileRouter from "./routes/profile.js";
 import groupsRouter from "./routes/groups.js";
+import messagesRouter from "./routes/messages.js";
 
 const app = express();
 const PgSession = connectPgSimple(session);
@@ -40,6 +41,7 @@ app.get("/api/health", (_req, res) => res.json({ status: "ok", service: "vyro-ap
 app.use("/api/auth", authRouter);
 app.use("/api/profile", profileRouter);
 app.use("/api/groups", groupsRouter);
+app.use("/api/messages", messagesRouter);
 
 app.use((err, _req, res, _next) => {
   console.error("Request failed:", err.message);
