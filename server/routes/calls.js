@@ -17,6 +17,13 @@ router.get("/ice-config",signedIn,(_req,res)=>{
  }
  res.set("Cache-Control","no-store").json({iceServers,turnEnabled:iceServers.length>1});
 });
+async function friendsStillConnected(call){
+ const r=await pool.query(`SELECT 1 FROM conversations v
+  JOIN friend_requests f ON f.status='accepted'
+   AND ((f.sender_id=$2 AND f.receiver_id=$3) OR (f.sender_id=$3 AND f.receiver_id=$2))
+  WHERE v.id=$1 AND v.kind='direct' LIMIT 1`,[call.conversation_id,call.caller_id,call.callee_id]);
+ return r.rowCount>0;
+}
 async function callAccess(callId,userId){
  const r=await pool.query(`SELECT c.id,c.conversation_id,c.caller_id,c.callee_id,c.call_type,c.status
   FROM call_sessions c WHERE c.id=$1 AND (c.caller_id=$2 OR c.callee_id=$2)`,[callId,userId]);
@@ -57,6 +64,7 @@ router.get("/:callId/signals",signedIn,async(req,res,next)=>{
  try{
   const call=await callAccess(req.params.callId,req.session.userId);
   if(!call)return res.status(404).json({error:"Call not found."});
+  if(!await friendsStillConnected(call))return res.status(403).json({error:"Calls require an active accepted friendship."});
   const since=Number(req.query.since)||0;
   const r=await pool.query("SELECT id,sender_id,signal_type,payload,created_at FROM call_signals WHERE call_id=$1 AND id>$2 AND sender_id<>$3 ORDER BY id ASC LIMIT 100",[call.id,since,req.session.userId]);
   res.json({signals:r.rows,callStatus:call.status});
@@ -70,6 +78,7 @@ router.post("/:callId/signals",signedIn,async(req,res,next)=>{
  try{
   const call=await callAccess(req.params.callId,req.session.userId);
   if(!call||call.status==="ended")return res.status(404).json({error:"Call is no longer active."});
+  if(!await friendsStillConnected(call))return res.status(403).json({error:"Calls require an active accepted friendship."});
   if(type==="reject"){
    await pool.query("UPDATE call_sessions SET status='ended',ended_at=now() WHERE id=$1 AND callee_id=$2 AND status='ringing'",[call.id,req.session.userId]);
    return res.json({sent:true});
