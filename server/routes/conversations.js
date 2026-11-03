@@ -25,6 +25,8 @@ router.post("/direct",signedIn,async(req,res,next)=>{
  try{
   const target=await client.query("SELECT id,username,full_name FROM profiles WHERE username=$1",[username]);
   if(!target.rowCount)return res.status(404).json({error:"No VYRO user found with that username."});
+  const friendship=await client.query(`SELECT id FROM friend_requests WHERE status='accepted' AND ((sender_id=$1 AND receiver_id=$2) OR (sender_id=$2 AND receiver_id=$1)) LIMIT 1`,[req.session.userId,target.rows[0].id]);
+  if(!friendship.rowCount)return res.status(403).json({error:"Send a friend request and wait for acceptance before chatting."});
   if(target.rows[0].id===req.session.userId)return res.status(400).json({error:"You cannot start a chat with yourself."});
   await client.query("BEGIN");
   const existing=await client.query(`SELECT c.id FROM conversations c JOIN conversation_members a ON a.conversation_id=c.id AND a.user_id=$1 JOIN conversation_members b ON b.conversation_id=c.id AND b.user_id=$2 WHERE c.kind='direct' LIMIT 1`,[req.session.userId,target.rows[0].id]);
