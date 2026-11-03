@@ -2,6 +2,11 @@ name: Build VYRO Android APK
 
 on:
   workflow_dispatch:
+    inputs:
+      api_base_url:
+        description: "Public HTTPS URL of the deployed VYRO API (for example https://your-api.example.com)"
+        required: false
+        type: string
   push:
     branches: [main]
     paths:
@@ -33,6 +38,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Build web app
+        env:
+          VITE_API_BASE_URL: ${{ inputs.api_base_url }}
         run: npm run build
       - name: Add Android platform
         run: npx cap add android
