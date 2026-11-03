@@ -16,9 +16,23 @@ const chatThemes = ["Crimson Pulse","Violet Haze","Ocean Depth","Emerald Night",
 
 
 async function request(path, options={}) {
-  const response = await fetch(API + path, { ...options, credentials:"include", headers:{"Content-Type":"application/json",...(options.headers||{})} });
+  // The Vite dev server proxies /api locally. A production Android build must
+  // have an explicit HTTPS API origin; relative URLs point back to the phone.
+  if (!API && !import.meta.env.DEV) {
+    throw new Error("VYRO server is not connected to this app yet. The online API URL must be configured before login can work.");
+  }
+  let response;
+  try {
+    response = await fetch(API + path, {
+      ...options,
+      credentials: "include",
+      headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+    });
+  } catch {
+    throw new Error("Can't reach the VYRO server. Check your internet connection or ask the app admin to finish server setup.");
+  }
   if (response.status === 204) return null;
-  const data = await response.json().catch(()=>({}));
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) throw new Error(data.error || "Something went wrong. Please try again.");
   return data;
 }
