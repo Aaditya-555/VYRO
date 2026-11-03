@@ -4,16 +4,30 @@ import { pool } from "../db.js";
 const router = Router();
 const signedIn = (req, res, next) => req.session.userId ? next() : res.status(401).json({ error: "Not signed in." });
 
+async function canAccessConversation(conversationId, userId) {
+  const result = await pool.query(
+    `SELECT c.kind FROM conversations c
+     JOIN conversation_members cm ON cm.conversation_id=c.id
+     WHERE c.id=$1 AND cm.user_id=$2
+       AND (c.kind='group' OR EXISTS (
+         SELECT 1 FROM conversation_members other
+         JOIN friend_requests fr ON fr.status='accepted'
+          AND ((fr.sender_id=$2 AND fr.receiver_id=other.user_id)
+            OR (fr.sender_id=other.user_id AND fr.receiver_id=$2))
+         WHERE other.conversation_id=c.id AND other.user_id<>$2
+       ))`,
+    [conversationId, userId]
+  );
+  return result.rowCount > 0;
+}
+
 router.get("/:conversationId", signedIn, async (req, res, next) => {
   try {
     const { conversationId } = req.params;
     const channelId = typeof req.query.channelId === "string" ? req.query.channelId : null;
     const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 40, 1), 100);
-    const member = await pool.query(
-      "SELECT 1 FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",
-      [conversationId, req.session.userId]
-    );
-    if (!member.rowCount) return res.status(404).json({ error: "Conversation not found." });
+    const allowed = await canAccessConversation(conversationId, req.session.userId);
+    if (!allowed) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
 
     if (channelId) {
       const channel = await pool.query(
@@ -46,11 +60,8 @@ router.post("/:conversationId", signedIn, async (req, res, next) => {
     const channelId = typeof req.body?.channelId === "string" ? req.body.channelId : null;
     if (!body || body.length > 10000) return res.status(400).json({ error: "Message must contain 1–10,000 characters." });
 
-    const member = await pool.query(
-      "SELECT 1 FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",
-      [conversationId, req.session.userId]
-    );
-    if (!member.rowCount) return res.status(404).json({ error: "Conversation not found." });
+    const allowed = await canAccessConversation(conversationId, req.session.userId);
+    if (!allowed) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
 
     if (channelId) {
       const channel = await pool.query(
@@ -75,11 +86,8 @@ router.post("/:conversationId/:messageId/reactions", signedIn, async (req, res, 
     const emoji = typeof req.body?.emoji === "string" ? req.body.emoji : "";
     const allowed = ["❤️","😂","🔥","👍","😍","😭","✨","🎉"];
     if (!allowed.includes(emoji)) return res.status(400).json({ error: "Choose a supported reaction." });
-    const member = await pool.query(
-      "SELECT 1 FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",
-      [req.params.conversationId, req.session.userId]
-    );
-    if (!member.rowCount) return res.status(404).json({ error: "Conversation not found." });
+    const allowed = await canAccessConversation(req.params.conversationId, req.session.userId);
+    if (!allowed) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
     const message = await pool.query(
       "SELECT 1 FROM messages WHERE id=$1 AND conversation_id=$2 AND deleted_at IS NULL",
       [req.params.messageId, req.params.conversationId]
@@ -104,7 +112,18 @@ router.patch("/:conversationId/:messageId", signedIn, async (req, res, next) => 
     const result = await pool.query(
       `UPDATE messages m SET body=$1,edited_at=now()
        WHERE m.id=$2 AND m.conversation_id=$3 AND m.sender_id=$4 AND m.deleted_at IS NULL
-         AND EXISTS(SELECT 1 FROM conversation_members cm WHERE cm.conversation_id=m.conversation_id AND cm.user_id=$4)
+         AND EXISTS(
+           SELECT 1 FROM conversations c
+           JOIN conversation_members cm ON cm.conversation_id=c.id AND cm.user_id=$4
+           WHERE c.id=m.conversation_id
+             AND (c.kind='group' OR EXISTS (
+               SELECT 1 FROM conversation_members other
+               JOIN friend_requests fr ON fr.status='accepted'
+                AND ((fr.sender_id=$4 AND fr.receiver_id=other.user_id)
+                  OR (fr.sender_id=other.user_id AND fr.receiver_id=$4))
+               WHERE other.conversation_id=c.id AND other.user_id<>$4
+             ))
+         )
        RETURNING m.id,m.conversation_id,m.channel_id,m.sender_id,m.body,m.created_at,m.edited_at,m.deleted_at`,
       [body, req.params.messageId, req.params.conversationId, req.session.userId]
     );
@@ -118,7 +137,18 @@ router.delete("/:conversationId/:messageId", signedIn, async (req, res, next) =>
     const result = await pool.query(
       `UPDATE messages m SET deleted_at=now(),body='[message deleted]'
        WHERE m.id=$1 AND m.conversation_id=$2 AND m.sender_id=$3 AND m.deleted_at IS NULL
-         AND EXISTS(SELECT 1 FROM conversation_members cm WHERE cm.conversation_id=m.conversation_id AND cm.user_id=$3)
+         AND EXISTS(
+           SELECT 1 FROM conversations c
+           JOIN conversation_members cm ON cm.conversation_id=c.id AND cm.user_id=$3
+           WHERE c.id=m.conversation_id
+             AND (c.kind='group' OR EXISTS (
+               SELECT 1 FROM conversation_members other
+               JOIN friend_requests fr ON fr.status='accepted'
+                AND ((fr.sender_id=$3 AND fr.receiver_id=other.user_id)
+                  OR (fr.sender_id=other.user_id AND fr.receiver_id=$3))
+               WHERE other.conversation_id=c.id AND other.user_id<>$3
+             ))
+         )
        RETURNING m.id`,
       [req.params.messageId, req.params.conversationId, req.session.userId]
     );
