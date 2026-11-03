@@ -84,6 +84,29 @@ router.delete("/:groupId/members/:userId",signedIn,async(req,res,next)=>{
  }catch(e){await client.query("ROLLBACK");next(e);}finally{client.release();}
 });
 
+// Ownership can be transferred only by the current owner to an existing member.
+router.post("/:groupId/transfer-ownership",signedIn,async(req,res,next)=>{
+ const nextOwnerId=typeof req.body?.userId==="string"?req.body.userId:"";
+ if(!nextOwnerId)return res.status(400).json({error:"Select a group member."});
+ if(nextOwnerId===req.session.userId)return res.status(400).json({error:"You already own this group."});
+ const client=await pool.connect();
+ try{
+  await client.query("BEGIN");
+  const group=await client.query("SELECT id FROM conversations WHERE id=$1 AND kind='group' FOR UPDATE",[req.params.groupId]);
+  if(!group.rowCount){await client.query("ROLLBACK");return res.status(404).json({error:"Group not found."});}
+  const roles=await client.query("SELECT user_id,role FROM conversation_members WHERE conversation_id=$1 AND user_id=ANY($2::uuid[]) FOR UPDATE",[req.params.groupId,[req.session.userId,nextOwnerId]]);
+  const actor=roles.rows.find(x=>x.user_id===req.session.userId);
+  const target=roles.rows.find(x=>x.user_id===nextOwnerId);
+  if(!actor||actor.role!=="owner"){await client.query("ROLLBACK");return res.status(403).json({error:"Only the current owner can transfer ownership."});}
+  if(!target){await client.query("ROLLBACK");return res.status(404).json({error:"The new owner must already be a group member."});}
+  await client.query("UPDATE conversation_members SET role='admin' WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,req.session.userId]);
+  await client.query("UPDATE conversation_members SET role='owner' WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,nextOwnerId]);
+  await client.query("INSERT INTO moderation_audit(moderator_id,action,target_user_id,conversation_id,metadata) VALUES($1,'ownership_transferred',$2,$3,'{}'::jsonb)",[req.session.userId,nextOwnerId,req.params.groupId]);
+  await client.query("COMMIT");
+  return res.json({transferred:true,newOwnerId:nextOwnerId});
+ }catch(e){await client.query("ROLLBACK");next(e);}finally{client.release();}
+});
+
 router.patch("/:groupId/members/:userId/role",signedIn,async(req,res,next)=>{
  const role=req.body?.role;
  if(!["moderator","member"].includes(role))return res.status(400).json({error:"Invalid role."});
