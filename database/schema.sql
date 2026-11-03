@@ -157,3 +157,17 @@ CREATE TABLE IF NOT EXISTS message_reactions (
   PRIMARY KEY (message_id,user_id,emoji)
 );
 CREATE INDEX IF NOT EXISTS message_reactions_message_idx ON message_reactions(message_id);
+
+-- Friend requests: accepted rows represent an active friendship.
+CREATE TABLE IF NOT EXISTS friend_requests (
+ id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+ sender_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+ receiver_id UUID NOT NULL REFERENCES profiles(id) ON DELETE CASCADE,
+ status TEXT NOT NULL DEFAULT 'pending' CHECK (status IN ('pending','accepted','declined')),
+ created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+ responded_at TIMESTAMPTZ,
+ CHECK (sender_id <> receiver_id)
+);
+CREATE UNIQUE INDEX IF NOT EXISTS friend_requests_pair_unique
+ ON friend_requests (LEAST(sender_id,receiver_id), GREATEST(sender_id,receiver_id));
+CREATE INDEX IF NOT EXISTS friend_requests_receiver_status_idx ON friend_requests(receiver_id,status,created_at DESC);
