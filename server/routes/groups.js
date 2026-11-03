@@ -61,6 +61,17 @@ router.patch("/:groupId/members/:userId/role",signedIn,async(req,res,next)=>{
  }catch(e){next(e);}
 });
 
+// Moderation history is visible only to the group owner/admin/moderator team.
+router.get("/:groupId/moderation-log",signedIn,async(req,res,next)=>{
+ try{
+  const access=await pool.query("SELECT role FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,req.session.userId]);
+  if(!access.rowCount)return res.status(404).json({error:"Group not found."});
+  if(!["owner","admin","moderator"].includes(access.rows[0].role))return res.status(403).json({error:"Moderator permission required."});
+  const limit=Math.min(Math.max(Number.parseInt(req.query.limit,10)||30,1),100);
+  const result=await pool.query("SELECT a.id,a.action,a.metadata,a.created_at,mod.username AS moderator_username,target.username AS target_username FROM moderation_audit a JOIN profiles mod ON mod.id=a.moderator_id LEFT JOIN profiles target ON target.id=a.target_user_id WHERE a.conversation_id=$1 ORDER BY a.created_at DESC LIMIT $2",[req.params.groupId,limit]);
+  return res.json({events:result.rows});
+ }catch(e){next(e);}
+});
 router.delete("/:groupId/channels/:channelId/messages/:messageId",signedIn,async(req,res,next)=>{
  try{
   const m=await pool.query("SELECT role FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,req.session.userId]);
