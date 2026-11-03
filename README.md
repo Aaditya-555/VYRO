@@ -8,7 +8,8 @@ VYRO is an early responsive chat-app foundation built with React, Vite, Express 
 - Starter API with username/password registration and login
 - Passwords hashed with bcrypt (12 rounds)
 - Login/register rate limiting
-- Server-side sessions stored in PostgreSQL with HttpOnly cookies
+- Server-side sessions stored in PostgreSQL with HttpOnly cookies (production uses Secure + SameSite=None for Android WebView cross-origin API calls)
+- API CORS allow-list supports multiple origins, including the Capacitor Android origin
 - Invite-code gate for account registration
 - PostgreSQL schema for profiles, invites, conversations, members, messages, cosmetics inventory and moderation audit metadata
 - Profile customization API for frames, nameplates, avatar effects, bio and status
@@ -22,10 +23,11 @@ Railway can host the Node.js API and a PostgreSQL database in one project. The d
 2. Add a PostgreSQL database service.
 3. Add a Node.js service from this GitHub repository.
 4. In the API service Variables, add a reference to the Postgres service's `DATABASE_URL`.
-5. Add `NODE_ENV=production`, `SESSION_SECRET` (a random value of at least 32 characters), and `CLIENT_ORIGIN` (the exact deployed web app origin).
+5. Add `NODE_ENV=production`, `SESSION_SECRET` (a random value of at least 32 characters), and `CLIENT_ORIGIN` as a comma-separated allow-list. Include `https://localhost` for the Android Capacitor app and the exact HTTPS origin of any deployed web client.
 6. Set the API service start command to `npm run server`.
 7. Apply `database/schema.sql` to the Railway database using a trusted SQL client or a one-time migration job. Never paste database credentials into chat or commit them.
-8. Check `/api/health` after deployment.
+8. Check `/api/health` after deployment; it now verifies the PostgreSQL connection and returns HTTP 503 if the database is unavailable.
+9. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. The APK build needs this value because a relative `/api` URL points to the phone itself, not the hosted API.
 
 Railway PostgreSQL connection variables and private networking are documented at https://docs.railway.com/databases/postgresql.
 
