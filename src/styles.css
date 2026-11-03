@@ -57,3 +57,12 @@
 @keyframes message-arrive{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
 @media(max-width:700px){.message-line{max-width:90%}.quick-reactions{opacity:1;transform:none}.messages-area{padding-bottom:28px}}
 @media(prefers-reduced-motion:reduce){.message-line{animation:none}.messages-area{scroll-behavior:auto}.reaction-chip,.quick-reactions{transition:none}}
+
+
+/* Real-time Three.js hero scene */
+.scene-wrap{position:absolute;inset:8% -2% 8% 20%;z-index:0;pointer-events:none;opacity:.94;mask-image:radial-gradient(ellipse at 52% 48%,#000 34%,transparent 76%)}
+.scene-wrap canvas{width:100%;height:100%;display:block}
+.auth-copy{z-index:2;text-shadow:0 2px 22px #080609}
+.auth-footer{z-index:2}
+@media(max-width:850px){.scene-wrap{inset:0;opacity:.2}}
+@media(prefers-reduced-motion:reduce){.scene-wrap{opacity:.48}}
