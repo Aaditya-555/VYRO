@@ -1,8 +1,22 @@
 import { Router } from "express";
+import { createHmac } from "node:crypto";
 import { pool } from "../db.js";
 
 const router=Router();
 const signedIn=(req,res,next)=>req.session.userId?next():res.status(401).json({error:"Not signed in."});
+
+// Coturn REST credentials are short-lived; the shared secret never enters the APK.
+router.get("/ice-config",signedIn,(_req,res)=>{
+ const iceServers=[{urls:["stun:stun.l.google.com:19302"]}];
+ const turnUrl=process.env.TURN_URL;
+ const turnSecret=process.env.TURN_SHARED_SECRET;
+ if(turnUrl&&turnSecret){
+  const username=String(Math.floor(Date.now()/1000)+3600);
+  const credential=createHmac("sha1",turnSecret).update(username).digest("base64");
+  iceServers.push({urls:turnUrl.split(",").map(x=>x.trim()).filter(Boolean),username,credential});
+ }
+ res.set("Cache-Control","no-store").json({iceServers,turnEnabled:iceServers.length>1});
+});
 async function callAccess(callId,userId){
  const r=await pool.query(`SELECT c.id,c.conversation_id,c.caller_id,c.callee_id,c.call_type,c.status
   FROM call_sessions c WHERE c.id=$1 AND (c.caller_id=$2 OR c.callee_id=$2)`,[callId,userId]);
@@ -23,7 +37,7 @@ router.post("/start",signedIn,async(req,res,next)=>{
   const friendship=await pool.query(`SELECT 1 FROM friend_requests WHERE status='accepted'
    AND ((sender_id=$1 AND receiver_id=$2) OR (sender_id=$2 AND receiver_id=$1)) LIMIT 1`,[req.session.userId,peerId]);
   if(!friendship.rowCount)return res.status(403).json({error:"Calls are available only between accepted friends."});
-  const active=await pool.query("SELECT id FROM call_sessions WHERE conversation_id=$1 AND status IN ('ringing','active')",[conversationId]);
+  const active=await pool.query("SELECT id FROM call_sessions WHERE conversation_id=$1 AND status IN ('ringing','active') AND created_at>now()-interval '2 minutes'",[conversationId]);
   if(active.rowCount)return res.status(409).json({error:"A call is already active in this chat."});
   const created=await pool.query("INSERT INTO call_sessions(conversation_id,caller_id,callee_id,call_type) VALUES($1,$2,$3,$4) RETURNING id,call_type,status,created_at",[conversationId,req.session.userId,peerId,callType]);
   res.status(201).json({call:created.rows[0]});
@@ -34,7 +48,7 @@ router.get("/incoming",signedIn,async(req,res,next)=>{
  try{
   const r=await pool.query(`SELECT c.id,c.conversation_id,c.call_type,c.created_at,p.username,p.full_name
    FROM call_sessions c JOIN profiles p ON p.id=c.caller_id
-   WHERE c.callee_id=$1 AND c.status='ringing' ORDER BY c.created_at DESC LIMIT 5`,[req.session.userId]);
+   WHERE c.callee_id=$1 AND c.status='ringing' AND c.created_at>now()-interval '60 seconds' ORDER BY c.created_at DESC LIMIT 5`,[req.session.userId]);
   res.json({calls:r.rows});
  }catch(e){next(e);}
 });
