@@ -32,7 +32,9 @@ export default function App() {
   const [error,setError] = useState("");
   const [conversations,setConversations] = useState([]);
   const [active,setActive] = useState(null);
-  const [chatError,setChatError] = useState("");\n  const [chatTheme,setChatTheme] = useState(0);\n  const [showThemes,setShowThemes] = useState(false);
+  const [chatError,setChatError] = useState("");
+  const [chatTheme,setChatTheme] = useState(0);
+  const [showThemes,setShowThemes] = useState(false);
   const [cosmetics,setCosmetics] = useState([]);
   const [tab,setTab] = useState("chats");
   const [message,setMessage] = useState("");
