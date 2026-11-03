@@ -26,8 +26,9 @@ Railway can host the Node.js API and a PostgreSQL database in one project. The d
 5. Add `NODE_ENV=production`, `SESSION_SECRET` (a random value of at least 32 characters), and `CLIENT_ORIGIN` as a comma-separated allow-list. Include `https://localhost` for the Android Capacitor app and the exact HTTPS origin of any deployed web client.
 6. Set the API service start command to `npm run server`.
 7. Apply `database/schema.sql` to the Railway database using a trusted SQL client or a one-time migration job. Never paste database credentials into chat or commit them.
-8. Check `/api/health` after deployment; it now verifies the PostgreSQL connection and returns HTTP 503 if the database is unavailable.
-9. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. The APK build needs this value because a relative `/api` URL points to the phone itself, not the hosted API.
+8. Check `/api/health` after deployment; it verifies PostgreSQL connectivity and returns HTTP 503 if the database is unavailable.
+9. From the deployed API service's terminal or a trusted admin environment, run `npm run invite:create -- 1 7` to create a single-use invite that expires in 7 days. The generated code is printed once; share it only with the intended friend. Never paste it into source control or public chat.
+10. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. A relative `/api` URL points to the phone itself, not the hosted API.
 
 Railway PostgreSQL connection variables and private networking are documented at https://docs.railway.com/databases/postgresql.
 
