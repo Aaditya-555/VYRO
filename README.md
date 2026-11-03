@@ -14,6 +14,8 @@ VYRO is an early responsive chat-app foundation built with React, Vite, Express 
 - PostgreSQL schema for profiles, invites, conversations, members, messages, cosmetics inventory and moderation audit metadata
 - Profile customization API for frames, nameplates, avatar effects, bio and status
 - Group/channel and moderator API foundation
+- Direct voice/video call signaling and WebRTC client foundation
+- Authenticated, short-lived TURN credentials for NAT/firewall traversal when a Coturn-compatible TURN service is configured
 
 ## Hosting plan (Railway + PostgreSQL)
 
@@ -28,7 +30,7 @@ Railway can host the Node.js API and a PostgreSQL database in one project. The d
 7. Apply `database/schema.sql` to the Railway database using a trusted SQL client or a one-time migration job. Never paste database credentials into chat or commit them.
 8. Check `/api/health` after deployment; it verifies PostgreSQL connectivity and returns HTTP 503 if the database is unavailable.
 9. From the deployed API service's terminal or a trusted admin environment, run `npm run invite:create -- 1 7` to create a single-use invite that expires in 7 days. The generated code is printed once; share it only with the intended friend. Never paste it into source control or public chat.
-10. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. A relative `/api` URL points to the phone itself, not the hosted API.
+11. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. A relative `/api` URL points to the phone itself, not the hosted API.
 
 Railway PostgreSQL connection variables and private networking are documented at https://docs.railway.com/databases/postgresql.
 
@@ -46,7 +48,7 @@ API health check: `GET http://localhost:3001/api/health`.
 
 ## Important status
 
-This is a development foundation, not a deployed or production-ready service. The profile customizer and chat composer still have preview-only UI portions; the UI is not yet fully connected to the APIs. Real-time message delivery, authenticated message endpoints, account recovery, CSRF protection, media storage, notifications and calling still need implementation and testing. Do not enter real passwords into the preview.
+This is a development foundation, not a deployed or production-ready service. The profile customizer and chat composer still have preview-only UI portions; the UI is not yet fully connected to the APIs. Real-time message delivery, authenticated message endpoints, account recovery, CSRF protection, media storage, notifications and calling still need deployment and real-device testing. Do not enter real passwords into the preview.
 
 Before production: deploy behind HTTPS, set production secrets in the hosting provider, configure CORS to the exact app origin, add CSRF protection and account recovery, review session lifecycle and monitoring, and run security tests. Never commit `.env`, API keys, database passwords, or raw invite codes.
 
