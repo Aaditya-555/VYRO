@@ -12,7 +12,15 @@ router.get("/",signedIn,async(req,res,next)=>{
     (SELECT m.created_at FROM messages m WHERE m.conversation_id=c.id ORDER BY m.created_at DESC LIMIT 1) AS last_message_at,
     COALESCE((SELECT json_agg(json_build_object('id',ch.id,'name',ch.name,'description',ch.description,'isDefault',ch.is_default) ORDER BY ch.is_default DESC,ch.name) FROM conversation_channels ch WHERE ch.conversation_id=c.id),'[]'::json) AS channels
    FROM conversations c JOIN conversation_members mine ON mine.conversation_id=c.id
-   WHERE mine.user_id=$1 ORDER BY COALESCE((SELECT max(m.created_at) FROM messages m WHERE m.conversation_id=c.id),c.created_at) DESC
+   WHERE mine.user_id=$1
+     AND (c.kind='group' OR EXISTS (
+       SELECT 1 FROM conversation_members other
+       JOIN friend_requests fr ON fr.status='accepted'
+        AND ((fr.sender_id=$1 AND fr.receiver_id=other.user_id)
+          OR (fr.sender_id=other.user_id AND fr.receiver_id=$1))
+       WHERE other.conversation_id=c.id AND other.user_id<>$1
+     ))
+   ORDER BY COALESCE((SELECT max(m.created_at) FROM messages m WHERE m.conversation_id=c.id),c.created_at) DESC
   `,[req.session.userId]);
   res.json({conversations:r.rows});
  }catch(e){next(e);}
