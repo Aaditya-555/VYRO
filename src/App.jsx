@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./styles.css";
+import VyroScene from "./VyroScene.jsx";
 
 const API = import.meta.env.VITE_API_BASE_URL || "";
 const effects = [
@@ -77,7 +78,7 @@ export default function App() {
 
   if(checking) return <main className="loading-screen"><div className="brand-mark">V</div><p>INITIALIZING VYRO</p></main>;
   if(!user) return <main className="auth-screen">
-    <div className="auth-visual"><div className="visual-grid"/><div className="auth-orb orb-one"/><div className="auth-orb orb-two"/>
+    <div className="auth-visual"><div className="visual-grid"/><div className="scene-wrap"><VyroScene /></div><div className="auth-orb orb-one"/><div className="auth-orb orb-two"/>
       <div className="auth-brand"><span>V</span>YRO</div><div className="auth-copy"><div className="eyebrow">PRIVATE • INVITE ONLY</div><h1>Your people.<br/><em>Your universe.</em></h1><p>A quieter, cleaner space to talk with the people who matter.</p></div>
       <div className="auth-footer">CREATED BY AADI <b>ϟ</b></div>
     </div>
