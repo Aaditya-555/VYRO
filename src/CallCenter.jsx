@@ -46,16 +46,21 @@ export default function CallCenter({conversation,user}){
  }
  async function start(type){
   if(!conversation||conversation.kind!=="direct")return;
+  let createdCallId=null;
   try{
    setError("");setStatus("Starting call…");
    if(!navigator.mediaDevices?.getUserMedia||!window.RTCPeerConnection)throw new Error("This device/browser does not support secure voice and video calls.");
    const d=await api("/api/calls/start",{method:"POST",body:JSON.stringify({conversationId:conversation.id,callType:type})});
+   createdCallId=d.call.id;
    setCall({...d.call,peerName:conversation.peer?.display_name||conversation.peer?.full_name||conversation.peer?.username||"Friend",outgoing:true});
    const peer=await makePeer(d.call.id,type==="video");
    const offer=await peer.createOffer();await peer.setLocalDescription(offer);
    await api("/api/calls/"+d.call.id+"/signals",{method:"POST",body:JSON.stringify({type:"offer",payload:peer.localDescription.toJSON()})});
    setStatus("Calling… waiting for answer");
-  }catch(e){setError(e.message);setStatus("");}
+  }catch(e){
+   if(createdCallId)try{await api("/api/calls/"+createdCallId+"/end",{method:"POST",body:"{}"});}catch{}
+   await cleanup(false);setError(e.message);setStatus("");
+  }
  }
  async function accept(item){
   try{
@@ -64,7 +69,10 @@ export default function CallCenter({conversation,user}){
    setStatus("Connecting…");
    if(!navigator.mediaDevices?.getUserMedia||!window.RTCPeerConnection)throw new Error("This device/browser does not support secure voice and video calls.");
    await makePeer(item.id,item.call_type==="video");
-  }catch(e){setError(e.message);}
+  }catch(e){
+   try{await api("/api/calls/"+item.id+"/end",{method:"POST",body:"{}"});}catch{}
+   await cleanup(false);setError(e.message);
+  }
  }
  async function reject(item){try{await api("/api/calls/"+item.id+"/signals",{method:"POST",body:JSON.stringify({type:"reject",payload:{}})});}catch(e){setError(e.message);}setIncoming(list=>list.filter(x=>x.id!==item.id));}
  useEffect(()=>{
