@@ -11,6 +11,10 @@ on:
     branches: [main]
     paths:
       - "src/**"
+      - "server/**"
+      - "database/**"
+      - "scripts/**"
+      - "railway.json"
       - "index.html"
       - "package.json"
       - "package-lock.json"
