@@ -25,7 +25,7 @@ async function friendsStillConnected(call){
  return r.rowCount>0;
 }
 async function callAccess(callId,userId){
- const r=await pool.query(`SELECT c.id,c.conversation_id,c.caller_id,c.callee_id,c.call_type,c.status
+ const r=await pool.query(`SELECT c.id,c.conversation_id,c.caller_id,c.callee_id,c.call_type,c.status,c.created_at
   FROM call_sessions c WHERE c.id=$1 AND (c.caller_id=$2 OR c.callee_id=$2)`,[callId,userId]);
  return r.rows[0]||null;
 }
@@ -65,6 +65,10 @@ router.get("/:callId/signals",signedIn,async(req,res,next)=>{
   const call=await callAccess(req.params.callId,req.session.userId);
   if(!call)return res.status(404).json({error:"Call not found."});
   if(!await friendsStillConnected(call))return res.status(403).json({error:"Calls require an active accepted friendship."});
+  if(call.status==="ringing"&&Date.now()-new Date(call.created_at).getTime()>60_000){
+   await pool.query("UPDATE call_sessions SET status='ended',ended_at=now() WHERE id=$1 AND status='ringing'",[call.id]);
+   return res.json({signals:[],callStatus:"ended"});
+  }
   const since=Number(req.query.since)||0;
   const r=await pool.query("SELECT id,sender_id,signal_type,payload,created_at FROM call_signals WHERE call_id=$1 AND id>$2 AND sender_id<>$3 ORDER BY id ASC LIMIT 100",[call.id,since,req.session.userId]);
   res.json({signals:r.rows,callStatus:call.status});
