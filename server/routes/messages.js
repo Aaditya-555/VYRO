@@ -26,8 +26,8 @@ router.get("/:conversationId", signedIn, async (req, res, next) => {
     const { conversationId } = req.params;
     const channelId = typeof req.query.channelId === "string" ? req.query.channelId : null;
     const limit = Math.min(Math.max(Number.parseInt(req.query.limit, 10) || 40, 1), 100);
-    const allowed = await canAccessConversation(conversationId, req.session.userId);
-    if (!allowed) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
+    const canView = await canAccessConversation(conversationId, req.session.userId);
+    if (!canView) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
 
     if (channelId) {
       const channel = await pool.query(
@@ -60,8 +60,8 @@ router.post("/:conversationId", signedIn, async (req, res, next) => {
     const channelId = typeof req.body?.channelId === "string" ? req.body.channelId : null;
     if (!body || body.length > 10000) return res.status(400).json({ error: "Message must contain 1–10,000 characters." });
 
-    const allowed = await canAccessConversation(conversationId, req.session.userId);
-    if (!allowed) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
+    const canView = await canAccessConversation(conversationId, req.session.userId);
+    if (!canView) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
 
     if (channelId) {
       const channel = await pool.query(
@@ -86,8 +86,8 @@ router.post("/:conversationId/:messageId/reactions", signedIn, async (req, res, 
     const emoji = typeof req.body?.emoji === "string" ? req.body.emoji : "";
     const allowed = ["❤️","😂","🔥","👍","😍","😭","✨","🎉"];
     if (!allowed.includes(emoji)) return res.status(400).json({ error: "Choose a supported reaction." });
-    const allowed = await canAccessConversation(req.params.conversationId, req.session.userId);
-    if (!allowed) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
+    const canView = await canAccessConversation(req.params.conversationId, req.session.userId);
+    if (!canView) return res.status(404).json({ error: "Conversation not found or access is no longer available." });
     const message = await pool.query(
       "SELECT 1 FROM messages WHERE id=$1 AND conversation_id=$2 AND deleted_at IS NULL",
       [req.params.messageId, req.params.conversationId]
