@@ -100,3 +100,8 @@
 @media(max-width:700px){.theme-picker{display:block;padding:10px 12px}.theme-picker>div:first-child{margin-bottom:9px}.theme-swatches{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
 .vyro-three-scene{position:absolute;inset:0;width:100%;height:100%}
+
+.friend-add-form{display:flex;gap:10px;max-width:650px;margin:24px 0}.friend-add-form input{flex:1;min-width:0;background:#17131b;border:1px solid #3a2b3b;border-radius:10px;padding:13px;color:#fff}.friend-add-form .primary-btn{width:auto;white-space:nowrap;padding:0 18px}
+.people-section{max-width:720px;margin:30px 0}.people-section h3{display:flex;align-items:center;gap:10px;font-size:14px;border-bottom:1px solid #302733;padding-bottom:12px}.people-section h3 span{font-size:11px;color:#ff8da4;background:#492031;padding:3px 8px;border-radius:99px}
+.person-row{display:flex;align-items:center;gap:8px;padding:12px 4px;border-bottom:1px solid #27212b}.person-row>div{display:grid;gap:4px;flex:1}.person-row small{font-size:11px;color:#918797}.person-row button{border:1px solid #7b3449;border-radius:8px;background:#341825;color:#ffdbe3;padding:8px 12px}.person-row .secondary-person{border-color:#403744;background:#211c25;color:#c9bfce}
+@media(max-width:620px){.friend-add-form{flex-direction:column}.friend-add-form .primary-btn{min-height:44px}}
