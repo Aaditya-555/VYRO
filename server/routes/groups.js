@@ -48,6 +48,42 @@ router.post("/:groupId/channels",signedIn,async(req,res,next)=>{
  }catch(e){if(e.code==="23505")return res.status(409).json({error:"Channel already exists."});next(e);}
 });
 
+router.get("/:groupId/members",signedIn,async(req,res,next)=>{
+ try{
+  const access=await pool.query("SELECT 1 FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,req.session.userId]);
+  if(!access.rowCount)return res.status(404).json({error:"Group not found."});
+  const result=await pool.query("SELECT p.id,p.username,p.display_name,cm.role,cm.joined_at FROM conversation_members cm JOIN profiles p ON p.id=cm.user_id WHERE cm.conversation_id=$1 ORDER BY CASE cm.role WHEN 'owner' THEN 0 WHEN 'admin' THEN 1 WHEN 'moderator' THEN 2 ELSE 3 END,lower(p.username)",[req.params.groupId]);
+  return res.json({members:result.rows});
+ }catch(e){next(e);}
+});
+
+// Members may leave; removing another member follows role hierarchy.
+router.delete("/:groupId/members/:userId",signedIn,async(req,res,next)=>{
+ const targetId=req.params.userId;
+ const actorId=req.session.userId;
+ const isSelf=targetId===actorId;
+ const client=await pool.connect();
+ try{
+  await client.query("BEGIN");
+  const roles=await client.query("SELECT user_id,role FROM conversation_members WHERE conversation_id=$1 AND user_id=ANY($2::uuid[]) FOR UPDATE",[req.params.groupId,[actorId,targetId]]);
+  const actor=roles.rows.find(x=>x.user_id===actorId);
+  const target=roles.rows.find(x=>x.user_id===targetId);
+  if(!actor||!target){await client.query("ROLLBACK");return res.status(404).json({error:"Group member not found."});}
+  if(isSelf){
+   if(actor.role==="owner"){await client.query("ROLLBACK");return res.status(409).json({error:"Group owner must transfer ownership before leaving."});}
+  }else{
+   const ownerCanRemove=actor.role==="owner"&&target.role!=="owner";
+   const adminCanRemove=actor.role==="admin"&&(target.role==="member"||target.role==="moderator");
+   const moderatorCanRemove=actor.role==="moderator"&&target.role==="member";
+   if(!ownerCanRemove&&!adminCanRemove&&!moderatorCanRemove){await client.query("ROLLBACK");return res.status(403).json({error:"You do not have permission to remove this member."});}
+  }
+  await client.query("DELETE FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,targetId]);
+  if(!isSelf)await client.query("INSERT INTO moderation_audit(moderator_id,action,target_user_id,conversation_id,metadata) VALUES($1,'member_removed',$2,$3,jsonb_build_object('targetRole',$4))",[actorId,targetId,req.params.groupId,target.role]);
+  await client.query("COMMIT");
+  return res.json({removed:true,left:isSelf});
+ }catch(e){await client.query("ROLLBACK");next(e);}finally{client.release();}
+});
+
 router.patch("/:groupId/members/:userId/role",signedIn,async(req,res,next)=>{
  const role=req.body?.role;
  if(!["moderator","member"].includes(role))return res.status(400).json({error:"Invalid role."});
