@@ -8,7 +8,7 @@ async function api(path,options={}){
  if(!r.ok)throw new Error(data.error||"Call request failed.");
  return data;
 }
-const rtcConfig={iceServers:[{urls:"stun:stun.l.google.com:19302"}]};
+async function getRtcConfig(){\n const config=await api("/api/calls/ice-config");\n return {iceServers:config.iceServers||[{urls:"stun:stun.l.google.com:19302"}],iceCandidatePoolSize:4};\n}
 export default function CallCenter({conversation,user}){
  const [call,setCall]=useState(null),[incoming,setIncoming]=useState([]),[status,setStatus]=useState(""),[error,setError]=useState("");
  const pc=useRef(null),stream=useRef(null),remoteAudio=useRef(null),remoteVideo=useRef(null),localVideo=useRef(null),lastSignal=useRef(0),queuedIce=useRef([]);
@@ -24,7 +24,7 @@ export default function CallCenter({conversation,user}){
   queuedIce.current=[];lastSignal.current=0;setCall(null);setStatus("");setError("");
  }
  async function makePeer(callId,video){
-  const peer=new RTCPeerConnection(rtcConfig);pc.current=peer;
+  const config=await getRtcConfig();\n  const peer=new RTCPeerConnection(config);pc.current=peer;
   const local=await navigator.mediaDevices.getUserMedia({audio:true,video});
   stream.current=local;
   if(localVideo.current)localVideo.current.srcObject=local;
