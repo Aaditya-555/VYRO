@@ -65,7 +65,12 @@ router.delete("/:groupId/channels/:channelId/messages/:messageId",signedIn,async
  try{
   const m=await pool.query("SELECT role FROM conversation_members WHERE conversation_id=$1 AND user_id=$2",[req.params.groupId,req.session.userId]);
   if(!m.rowCount||!["owner","admin","moderator"].includes(m.rows[0].role))return res.status(403).json({error:"Moderator permission required."});
-  const d=await pool.query("UPDATE messages SET deleted_at=now(),body='[message removed by moderator]' WHERE id=$1 AND channel_id=$2 AND deleted_at IS NULL RETURNING id",[req.params.messageId,req.params.channelId]);
+  // Bind the channel to the same group whose moderator role was checked above.
+  // Without this condition, a moderator in one group could target another group's channel.
+  const d=await pool.query(
+   "UPDATE messages SET deleted_at=now(),body='[message removed by moderator]' WHERE id=$1 AND channel_id=$2 AND deleted_at IS NULL AND EXISTS (SELECT 1 FROM conversation_channels ch WHERE ch.id=messages.channel_id AND ch.conversation_id=$3) RETURNING id",
+   [req.params.messageId,req.params.channelId,req.params.groupId]
+  );
   if(!d.rowCount)return res.status(404).json({error:"Message not found."});
   await pool.query("INSERT INTO moderation_audit(moderator_id,action,conversation_id,metadata) VALUES($1,'message_removed',$2,jsonb_build_object('channelId',$3,'messageId',$4))",[req.session.userId,req.params.groupId,req.params.channelId,req.params.messageId]);
   res.json({removed:true});
