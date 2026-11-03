@@ -51,6 +51,7 @@ jobs:
           node --check server/routes/messages.js
           node --check server/routes/conversations.js
           node --check server/routes/friends.js
+          node --check server/routes/calls.js
           node --check scripts/create-invite.js
       - name: Build web app
         env:
