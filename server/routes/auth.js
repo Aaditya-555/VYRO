@@ -17,7 +17,7 @@ const validPassword = (value) => typeof value === "string" && value.length >= 10
 
 router.post("/register", authLimiter, async (req, res, next) => {
   try {
-    const { fullName, username, password, inviteCode } = req.body ?? {};
+    const { fullName, username, password } = req.body ?? {};
     if (typeof fullName !== "string" || fullName.trim().length < 2 || fullName.trim().length > 60) {
       return res.status(400).json({ error: "Enter a name between 2 and 60 characters." });
     }
@@ -27,34 +27,19 @@ router.post("/register", authLimiter, async (req, res, next) => {
     if (!validPassword(password)) {
       return res.status(400).json({ error: "Password must be 10–72 characters long." });
     }
-    if (typeof inviteCode !== "string" || !inviteCode.trim()) {
-      return res.status(400).json({ error: "An invite code is required to create an account." });
-    }
-
-    const invite = await pool.query(
-      "SELECT id FROM invite_codes WHERE code_hash = encode(digest($1, 'sha256'), 'hex') AND revoked_at IS NULL AND (expires_at IS NULL OR expires_at > now()) AND (max_uses IS NULL OR uses < max_uses) LIMIT 1",
-      [inviteCode.trim()]
-    );
-    if (!invite.rowCount) return res.status(403).json({ error: "This invite code is invalid or expired." });
 
     const passwordHash = await bcrypt.hash(password, 12);
     const client = await pool.connect();
     try {
       await client.query("BEGIN");
-      const lockedInvite = await client.query(
-        "SELECT id FROM invite_codes WHERE id = $1 AND revoked_at IS NULL AND (expires_at IS NULL OR expires_at > now()) AND (max_uses IS NULL OR uses < max_uses) FOR UPDATE",
-        [invite.rows[0].id]
-      );
-      if (!lockedInvite.rowCount) {
-        await client.query("ROLLBACK");
-        return res.status(403).json({ error: "This invite code is no longer available." });
-      }
       const created = await client.query(
         "INSERT INTO profiles (full_name, username, password_hash) VALUES ($1, $2, $3) RETURNING id, full_name, username, created_at",
         [fullName.trim(), username.toLowerCase(), passwordHash]
       );
-      await client.query("UPDATE invite_codes SET uses = uses + 1 WHERE id = $1", [invite.rows[0].id]);
-      await client.query("INSERT INTO user_cosmetics (user_id, cosmetic_slug) SELECT $1, slug FROM cosmetic_catalog WHERE cosmetic_type IN ('frame','nameplate','avatar_effect') AND is_active = true ON CONFLICT DO NOTHING", [created.rows[0].id]);
+      await client.query(
+        "INSERT INTO user_cosmetics (user_id, cosmetic_slug) SELECT $1, slug FROM cosmetic_catalog WHERE cosmetic_type IN ('frame','nameplate','avatar_effect') AND is_active = true ON CONFLICT DO NOTHING",
+        [created.rows[0].id]
+      );
       await client.query("COMMIT");
       req.session.regenerate((sessionError) => {
         if (sessionError) return next(sessionError);
