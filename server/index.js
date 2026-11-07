@@ -11,7 +11,6 @@ import groupsRouter from "./routes/groups.js";
 import messagesRouter from "./routes/messages.js";
 import conversationsRouter from "./routes/conversations.js";
 import friendsRouter from "./routes/friends.js";
-import callsRouter from "./routes/calls.js";
 
 const app = express();
 const PgSession = connectPgSimple(session);
@@ -69,7 +68,6 @@ app.use("/api/groups", groupsRouter);
 app.use("/api/messages", messagesRouter);
 app.use("/api/conversations", conversationsRouter);
 app.use("/api/friends", friendsRouter);
-app.use("/api/calls", callsRouter);
 
 app.use((err, _req, res, _next) => {
   console.error("Request failed:", err.message);
