@@ -10,7 +10,7 @@ VYRO is an early responsive chat-app foundation built with React, Vite, Express 
 - Login/register rate limiting
 - Server-side sessions stored in PostgreSQL with HttpOnly cookies (production uses Secure + SameSite=None for Android WebView cross-origin API calls)
 - API CORS allow-list supports multiple origins, including the Capacitor Android origin
-- Invite-code gate for account registration
+- Open username/password registration; no invite code required
 - PostgreSQL schema for profiles, invites, conversations, members, messages, cosmetics inventory and moderation audit metadata
 - Profile customization API for frames, nameplates, avatar effects, bio and status
 - Group/channel and moderator API foundation
@@ -29,8 +29,7 @@ Railway can host the Node.js API and a PostgreSQL database in one project. The d
 6. Set the API service start command to `npm run server`.
 7. Apply `database/schema.sql` to the Railway database using a trusted SQL client or a one-time migration job. Never paste database credentials into chat or commit them.
 8. Check `/api/health` after deployment; it verifies PostgreSQL connectivity and returns HTTP 503 if the database is unavailable.
-9. From the deployed API service's terminal or a trusted admin environment, run `npm run invite:create -- 1 7` to create a single-use invite that expires in 7 days. The generated code is printed once; share it only with the intended friend. Never paste it into source control or public chat.
-11. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. A relative `/api` URL points to the phone itself, not the hosted API.
+10. In GitHub Actions, run **Build VYRO Android APK** with the `api_base_url` input set to the public HTTPS API origin. A relative `/api` URL points to the phone itself, not the hosted API.
 
 Railway PostgreSQL connection variables and private networking are documented at https://docs.railway.com/databases/postgresql.
 
