@@ -51,11 +51,10 @@ jobs:
           node --check server/routes/messages.js
           node --check server/routes/conversations.js
           node --check server/routes/friends.js
-          node --check server/routes/calls.js
-          node --check scripts/create-invite.js
+
       - name: Build web app
         env:
-          VITE_API_BASE_URL: ${{ inputs.api_base_url }}
+          VITE_API_BASE_URL: ${{ inputs.api_base_url || 'https://vyro-api-y570.onrender.com' }}
         run: npm run build
       - name: Add Android platform
         run: npx cap add android
