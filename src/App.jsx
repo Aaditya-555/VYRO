@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./styles.css";
 import VyroScene from "./VyroScene.jsx";
-import CallCenter from "./CallCenter.jsx";
 
 const API = import.meta.env.VITE_API_BASE_URL || "";
 const effects = [
@@ -133,7 +132,6 @@ export default function App() {
         <div className="people-section"><h3>Sent requests <span>{friends.outgoing.length}</span></h3>{friends.outgoing.map(f=><div className="person-row" key={f.id}><div><b>{f.full_name}</b><small>@{f.username} · Pending</small></div></div>)}</div></section>}
       {tab==="profile"&&<section className="content-panel profile-page"><div className="eyebrow">VYRO / PROFILE STUDIO</div><h1>Build your identity.</h1><p className="studio-intro">Your avatar, animated effects and nameplates live here — separate from your chats.</p><div className="profile-preview"><div className={"big-avatar effect-"+effect}>{user.username.slice(0,1).toUpperCase()}<i>{effects.find(x=>x[0]===effect)?.[2]}</i></div><div><h2>{user.full_name}</h2><p>@{user.username}</p><span className="plate-chip">{plate}</span></div></div><div className="studio-tabs"><button className={profileTab==="avatar"?"active":""} onClick={()=>setProfileTab("avatar")}>Avatar effects</button><button className={profileTab==="plate"?"active":""} onClick={()=>setProfileTab("plate")}>Nameplates</button></div>{profileTab==="avatar"?<div className="cosmetic-grid">{effects.map(([id,name,symbol])=><button key={id} className={effect===id?"cosmetic-card chosen":"cosmetic-card"} onClick={()=>saveCosmetic("equipped_avatar_effect",id)}><span className={"cosmetic-symbol effect-"+id}><i>{symbol}</i><b>{symbol}</b></span><b>{name}</b><small>{effect===id?"EQUIPPED":"TAP TO EQUIP"}</small></button>)}</div>:<div className="plate-grid">{plates.map(p=><button key={p} className={plate===p?"plate-option chosen":"plate-option"} onClick={()=>{const item=cosmetics.find(c=>c.cosmetic_type==="nameplate"&&c.display_name===p);if(item)saveCosmetic("equipped_nameplate",item.slug);}}>{p}{plate===p?" ✓":""}</button>)}</div>}<p className="muted tiny">Selections save to your account when the server is connected.</p></section>}
     </div>
-    <CallCenter conversation={active} user={user} />
     <footer className="app-footer"><span>VYRO © 2026</span><span>CREATED BY AADI ⚡</span><button onClick={checkLocation}> {location==="verified"?"✓ LOCATION PERMISSION GRANTED":"CHECK LOCATION PERMISSION"}</button></footer>
     {location!=="not-checked"&&<div className="location-status">{location==="checking"?"Checking location permission…":locationText||"Location status"} <button onClick={()=>{setLocation("not-checked");setLocationText("");}}>×</button><small>Location permission is checked only when you tap this button. This does not verify identity, and coordinates are not sent to VYRO.</small></div>}
   </main>;
