@@ -9,8 +9,7 @@
     "build": "vite build",
     "preview": "vite preview --host 0.0.0.0",
     "android:sync": "npm run build && cap sync android",
-    "android:open": "cap open android",
-    "invite:create": "node scripts/create-invite.js"
+    "android:open": "cap open android"
   },
   "dependencies": {
     "@vitejs/plugin-react": "^4.3.4",
