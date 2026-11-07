@@ -105,26 +105,3 @@
 .people-section{max-width:720px;margin:30px 0}.people-section h3{display:flex;align-items:center;gap:10px;font-size:14px;border-bottom:1px solid #302733;padding-bottom:12px}.people-section h3 span{font-size:11px;color:#ff8da4;background:#492031;padding:3px 8px;border-radius:99px}
 .person-row{display:flex;align-items:center;gap:8px;padding:12px 4px;border-bottom:1px solid #27212b}.person-row>div{display:grid;gap:4px;flex:1}.person-row small{font-size:11px;color:#918797}.person-row button{border:1px solid #7b3449;border-radius:8px;background:#341825;color:#ffdbe3;padding:8px 12px}.person-row .secondary-person{border-color:#403744;background:#211c25;color:#c9bfce}
 @media(max-width:620px){.friend-add-form{flex-direction:column}.friend-add-form .primary-btn{min-height:44px}}
-
-
-/* VYRO WebRTC call controls and responsive call stage */
-.call-center{display:contents}
-.call-action{border:1px solid #553344;background:#25151f;color:#ffdce6;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:700;cursor:pointer}
-.call-action.video{border-color:#38465d;background:#17202c;color:#dceaff}
-.call-action:disabled{opacity:.45;cursor:not-allowed}
-.incoming-call{position:fixed;z-index:80;right:22px;top:76px;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 28px);padding:14px 16px;border:1px solid #744057;border-radius:14px;background:linear-gradient(135deg,#271722,#14131c);box-shadow:0 18px 55px #000b;color:#fff}
-.incoming-call>div{display:grid;gap:4px;min-width:140px}.incoming-call b{font-size:12px}.incoming-call small{font-size:10px;color:#b9aab8}
-.incoming-call button,.call-controls button{border:1px solid #714052;background:#442033;color:#ffe7ed;border-radius:9px;padding:9px 12px;font-size:11px;font-weight:700}
-.incoming-call .decline{border-color:#51434e;background:#25212a;color:#ddd}
-.call-overlay{position:fixed;z-index:100;inset:0;display:grid;place-items:center;padding:18px;background:#050408df;backdrop-filter:blur(16px)}
-.call-window{position:relative;width:min(720px,100%);min-height:340px;padding:24px;border:1px solid #5b3448;border-radius:22px;background:radial-gradient(ellipse at 50% 0%,#53243b,#17131d 65%);box-shadow:0 30px 100px #000c;color:#fff;text-align:center;overflow:hidden}
-.call-top{display:flex;justify-content:center;align-items:center;gap:9px;flex-wrap:wrap;font-size:12px}.call-top small{color:#bbaab8}.call-live-dot{width:8px;height:8px;border-radius:50%;background:#ff567a;box-shadow:0 0 12px #ff567a;animation:call-pulse 1.4s infinite}
-.call-window h2{margin:24px 0 5px;font-size:25px}.call-error{color:#ff9bad;font-size:11px;min-height:14px}
-.remote-video{display:block;width:100%;max-height:340px;object-fit:cover;border-radius:14px;background:#09080c;margin:14px auto}
-.local-video{position:absolute;right:36px;top:70px;width:110px;height:145px;object-fit:cover;border:1px solid #ffffff55;border-radius:12px;background:#08070b}
-.call-controls{display:flex;justify-content:center;gap:10px;margin-top:20px;flex-wrap:wrap}.call-controls .hangup{background:#a51f42;border-color:#ff6b89;color:#fff;padding-inline:20px}
-.call-toast{position:fixed;z-index:90;bottom:22px;left:50%;transform:translateX(-50%);max-width:calc(100vw - 28px);padding:12px 16px;border:1px solid #7a4054;border-radius:12px;background:#21141e;color:#ffdce5;font-size:11px;box-shadow:0 12px 35px #0009}
-.call-toast button{margin-left:10px;border:0;background:none;color:#fff}
-@keyframes call-pulse{50%{opacity:.35;transform:scale(.8)}}
-@media(max-width:600px){.incoming-call{left:10px;right:10px;top:66px;justify-content:space-between;padding:11px}.incoming-call>div{min-width:0;flex:1}.call-window{padding:18px 12px;min-height:300px}.call-window h2{font-size:21px}.local-video{right:20px;top:65px;width:78px;height:104px}.remote-video{max-height:48vh}.call-controls{gap:6px}.call-controls button{padding:9px}}
-@media(prefers-reduced-motion:reduce){.call-live-dot{animation:none}}
