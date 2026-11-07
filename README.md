@@ -14,8 +14,6 @@ VYRO is an early responsive chat-app foundation built with React, Vite, Express 
 - PostgreSQL schema for profiles, invites, conversations, members, messages, cosmetics inventory and moderation audit metadata
 - Profile customization API for frames, nameplates, avatar effects, bio and status
 - Group/channel and moderator API foundation
-- Direct voice/video call signaling and WebRTC client foundation
-- Authenticated, short-lived TURN credentials for NAT/firewall traversal when a Coturn-compatible TURN service is configured
 
 ## Hosting plan (Railway + PostgreSQL)
 
@@ -47,7 +45,7 @@ API health check: `GET http://localhost:3001/api/health`.
 
 ## Important status
 
-This is a development foundation, not a deployed or production-ready service. The profile customizer and chat composer still have preview-only UI portions; the UI is not yet fully connected to the APIs. Real-time message delivery, authenticated message endpoints, account recovery, CSRF protection, media storage, notifications and calling still need deployment and real-device testing. Do not enter real passwords into the preview.
+This is a development foundation, not a deployed or production-ready service. The profile customizer and chat composer still have preview-only UI portions; the UI is not yet fully connected to the APIs. Real-time message delivery, authenticated message endpoints, account recovery, CSRF protection, media storage and notifications still need deployment and real-device testing. Voice and video calling are not included in VYRO. Do not enter real passwords into the preview.
 
 Before production: deploy behind HTTPS, set production secrets in the hosting provider, configure CORS to the exact app origin, add CSRF protection and account recovery, review session lifecycle and monitoring, and run security tests. Never commit `.env`, API keys, database passwords, or raw invite codes.
 
