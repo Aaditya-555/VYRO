@@ -171,28 +171,3 @@ CREATE TABLE IF NOT EXISTS friend_requests (
 CREATE UNIQUE INDEX IF NOT EXISTS friend_requests_pair_unique
  ON friend_requests (LEAST(sender_id,receiver_id), GREATEST(sender_id,receiver_id));
 CREATE INDEX IF NOT EXISTS friend_requests_receiver_status_idx ON friend_requests(receiver_id,status,created_at DESC);
-
-
--- Direct-call signaling. Media stays peer-to-peer; the API only relays setup signals.
-CREATE TABLE IF NOT EXISTS call_sessions (
- id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
- conversation_id UUID NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
- caller_id UUID NOT NULL REFERENCES profiles(id),
- callee_id UUID NOT NULL REFERENCES profiles(id),
- call_type TEXT NOT NULL CHECK (call_type IN ('voice','video')),
- status TEXT NOT NULL DEFAULT 'ringing' CHECK (status IN ('ringing','active','ended')),
- created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
- answered_at TIMESTAMPTZ,
- ended_at TIMESTAMPTZ,
- CHECK (caller_id <> callee_id)
-);
-CREATE INDEX IF NOT EXISTS call_sessions_callee_status_idx ON call_sessions(callee_id,status,created_at DESC);
-CREATE TABLE IF NOT EXISTS call_signals (
- id BIGSERIAL PRIMARY KEY,
- call_id UUID NOT NULL REFERENCES call_sessions(id) ON DELETE CASCADE,
- sender_id UUID NOT NULL REFERENCES profiles(id),
- signal_type TEXT NOT NULL CHECK (signal_type IN ('offer','answer','ice-candidate','reject')),
- payload JSONB NOT NULL DEFAULT '{}'::jsonb,
- created_at TIMESTAMPTZ NOT NULL DEFAULT now()
-);
-CREATE INDEX IF NOT EXISTS call_signals_call_id_idx ON call_signals(call_id,id);
